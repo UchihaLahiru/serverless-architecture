@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.pera</groupId>
+    <artifactId>serverless_architecture</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>lambdanettyloadbalancer</module>
+        <module>lambdasystemservice</module>
+        <module>lambdacli</module>
+
+    </modules>
+    <packaging>pom</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <netty.all.version>4.1.12.Final</netty.all.version>
+        <log4j.version>1.2.17</log4j.version>
+        <spymemcached.version>2.12.1</spymemcached.version>
+        <jetcd.version>0.1.0-SNAPSHOT</jetcd.version>
+        <jackson-databind.version>2.8.7</jackson-databind.version>
+    </properties>
+</project>
