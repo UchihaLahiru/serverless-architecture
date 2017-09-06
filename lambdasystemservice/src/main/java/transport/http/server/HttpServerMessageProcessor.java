@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class HttpServerMessageProcessor {
+
     public static final String HOST = "HOST";
     private static HttpServerMessageProcessor httpServerMessageProcessor = new HttpServerMessageProcessor();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
