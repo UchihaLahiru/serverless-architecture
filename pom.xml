@@ -11,9 +11,18 @@
         <module>lambdanettyloadbalancer</module>
         <module>lambdasystemservice</module>
         <module>lambdacli</module>
-
     </modules>
     <packaging>pom</packaging>
+
+
+    <properties>
+        <java.version>1.8</java.version>
+        <netty.all.version>4.1.12.Final</netty.all.version>
+        <log4j.version>1.2.17</log4j.version>
+        <spymemcached.version>2.12.1</spymemcached.version>
+        <jackson-databind.version>2.8.7</jackson-databind.version>
+        <jetcd.version>0.1.0-SNAPSHOT</jetcd.version>
+    </properties>
     <build>
         <plugins>
             <plugin>
@@ -24,28 +33,7 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <!-- ... -->
-                    <!--<archive>-->
-                        <!--<manifest>-->
-                            <!--<mainClass>compute.ServerLaunchImplement</mainClass>-->
-                        <!--</manifest>-->
-                    <!--</archive>-->
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </plugin>
+
         </plugins>
     </build>
     <dependencies>
@@ -58,11 +46,4 @@
 
     </dependencies>
 
-    <properties>
-        <java.version>1.8</java.version>
-        <netty.all.version>4.1.12.Final</netty.all.version>
-        <log4j.version>1.2.17</log4j.version>
-        <spymemcached.version>2.12.1</spymemcached.version>
-        <jackson-databind.version>2.8.7</jackson-databind.version>
-    </properties>
 </project>

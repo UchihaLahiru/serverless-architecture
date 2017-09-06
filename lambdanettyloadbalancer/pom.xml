@@ -42,8 +42,8 @@
 
         <dependency>
             <groupId>com.coreos</groupId>
-            <artifactId>jetcd-core</artifactId>
-            <version>0.0.1</version>
+            <artifactId>jetcd</artifactId>
+            <version>${jetcd.version}</version>
         </dependency>
 
         <dependency>
