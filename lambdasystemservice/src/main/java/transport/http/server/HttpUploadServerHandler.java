@@ -1,44 +1,19 @@
 package transport.http.server;
 
-/*
- * Copyright 2012 The Netty Project
- *
- * The Netty Project licenses this file to you under the Apache License,
- * version 2.0 (the "License"); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at:
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
-
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http.cookie.Cookie;
-import io.netty.handler.codec.http.cookie.ServerCookieDecoder;
-import io.netty.handler.codec.http.cookie.ServerCookieEncoder;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.EndOfDataDecoderException;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.ErrorDataDecoderException;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType;
 import io.netty.util.CharsetUtil;
+import org.apache.log4j.Logger;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import static io.netty.buffer.Unpooled.copiedBuffer;
 
 public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObject> {
 
@@ -46,11 +21,9 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
 
     private HttpRequest request;
 
-    private boolean readingChunks;
-
+    private boolean isFileUpload = true;
     private HttpData partialContent;
 
-    private final StringBuilder responseContent = new StringBuilder();
 
     private static final HttpDataFactory factory =
             new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE); // Disk if size exceed
@@ -58,13 +31,17 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
     private HttpPostRequestDecoder decoder;
 
     static {
-        DiskFileUpload.deleteOnExitTemporaryFile = true; // should delete file
+        DiskFileUpload.deleteOnExitTemporaryFile = false; // should delete file
         // on exit (in normal
         // exit)
-        DiskFileUpload.baseDirectory = "/Users/maanadev/Projects/uni/serverless_architecture/lambdasystemservice"; // system temp directory
-        DiskAttribute.deleteOnExitTemporaryFile = true; // should delete file on
+        DiskFileUpload.baseDirectory = null; // system temp directory
+        DiskAttribute.deleteOnExitTemporaryFile = false; // should delete file on
         // exit (in normal exit)
         DiskAttribute.baseDirectory = null; // system temp directory
+    }
+
+    HttpUploadServerHandler() {
+        super(false);
     }
 
     @Override
@@ -76,69 +53,66 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-        if (msg instanceof HttpRequest) {
-            HttpRequest request = this.request = (HttpRequest) msg;
-            URI uri = new URI(request.uri());
-            if (!uri.getPath().startsWith("/form")) {
-                // Write Menu
-                writeMenu(ctx);
-                return;
-            }
+        if (isFileUpload) {
+            if (msg instanceof HttpRequest) {
+                HttpRequest request = this.request = (HttpRequest) msg;
 
+                URI uri = new URI(request.uri());
+                logger.info(uri.getPath());
+                if (!uri.getPath().startsWith("/file")) {
+                    notAFileUpload(ctx, msg);
+                    return;
+                }
 
-
-
-
-            try {
-                decoder = new HttpPostRequestDecoder(factory, request);
-            } catch (ErrorDataDecoderException e1) {
-                e1.printStackTrace();
-                responseContent.append(e1.getMessage());
-                writeResponse(ctx.channel());
-                ctx.channel().close();
-                return;
-            }
-
-            readingChunks = HttpUtil.isTransferEncodingChunked(request);
-            responseContent.append("Is Chunked: " + readingChunks + "\r\n");
-            responseContent.append("IsMultipart: " + decoder.isMultipart() + "\r\n");
-            if (readingChunks) {
-                // Chunk version
-                responseContent.append("Chunks: ");
-                readingChunks = true;
-            }
-        }
-
-        // check if the decoder was constructed before
-        // if not it handles the form get
-        if (decoder != null) {
-            if (msg instanceof HttpContent) {
-                // New chunk is received
-                HttpContent chunk = (HttpContent) msg;
                 try {
-                    decoder.offer(chunk);
+                    decoder = new HttpPostRequestDecoder(factory, request);
                 } catch (ErrorDataDecoderException e1) {
-                    e1.printStackTrace();
-                    responseContent.append(e1.getMessage());
-                    writeResponse(ctx.channel());
+                    logger.error("Decoder error",e1);
+                    writeErrorResponse(ctx.channel());
                     ctx.channel().close();
                     return;
                 }
-                responseContent.append('o');
-                // example of reading chunk by chunk (minimize memory usage due to
-                // Factory)
-                readHttpDataChunkByChunk();
-                // example of reading only if at the end
-                if (chunk instanceof LastHttpContent) {
-                    writeResponse(ctx.channel());
-                    readingChunks = false;
+            }
 
-                    reset();
+            // check if the decoder was constructed before
+            // if not it handles the form get
+            if (decoder != null) {
+                if (msg instanceof HttpContent) {
+                    // New chunk is received
+                    HttpContent chunk = (HttpContent) msg;
+                    try {
+                        decoder.offer(chunk);
+                    } catch (ErrorDataDecoderException e1) {
+                        e1.printStackTrace();
+                        writeErrorResponse(ctx.channel());
+                        ctx.channel().close();
+                        return;
+                    }
+                    // example of reading chunk by chunk (minimize memory usage due to
+                    // Factory)
+                    readHttpDataChunkByChunk();
+                    // example of reading only if at the end
+                    if (chunk instanceof LastHttpContent) {
+                        writeOkResponse(ctx.channel());
+                        reset();
+                    }
                 }
             }
+//            } else {
+//                writeOkResponse(ctx.channel());
+//            }
+
+
         } else {
-            writeResponse(ctx.channel());
+
+            notAFileUpload(ctx, msg);
         }
+
+    }
+
+    private void notAFileUpload(ChannelHandlerContext ctx, HttpObject msg) {
+        isFileUpload = false;
+        ctx.fireChannelRead(msg);
     }
 
     private void reset() {
@@ -175,6 +149,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
             if (data != null) {
                 StringBuilder builder = new StringBuilder();
                 if (partialContent == null) {
+                    System.out.println("partialCOntent");
                     partialContent = (HttpData) data;
                     if (partialContent instanceof FileUpload) {
                         builder.append("Start FileUpload: ")
@@ -188,103 +163,111 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                 if (partialContent.definedLength() > 0) {
                     builder.append(" ").append(partialContent.length() * 100 / partialContent.definedLength())
                             .append("% ");
-                    logger.info(builder.toString());
+                    logger.info("defined " + builder.toString());
                 } else {
                     builder.append(" ").append(partialContent.length()).append(" ");
-                    logger.info(builder.toString());
+                    logger.info("else " + builder.toString());
                 }
             }
         } catch (EndOfDataDecoderException e1) {
-            // end
-            responseContent.append("\r\n\r\nEND OF CONTENT CHUNK BY CHUNK\r\n\r\n");
+
+          logger.info("Done uploading");
+
         }
     }
 
     private void writeHttpData(InterfaceHttpData data) {
         if (data.getHttpDataType() == HttpDataType.Attribute) {
-            Attribute attribute = (Attribute) data;
-            String value;
-            try {
-                value = attribute.getValue();
-            } catch (IOException e1) {
-                // Error while reading data from File, only print name and error
-                e1.printStackTrace();
-                responseContent.append("\r\nBODY Attribute: " + attribute.getHttpDataType().name() + ": "
-                        + attribute.getName() + " Error while reading value: " + e1.getMessage() + "\r\n");
-                return;
-            }
-            if (value.length() > 100) {
-                responseContent.append("\r\nBODY Attribute: " + attribute.getHttpDataType().name() + ": "
-                        + attribute.getName() + " data too long\r\n");
-            } else {
-                responseContent.append("\r\nBODY Attribute: " + attribute.getHttpDataType().name() + ": "
-                        + attribute + "\r\n");
-            }
+//            Attribute attribute = (Attribute) data;
+//            String value;
+//            try {
+//                value = attribute.getValue();
+//                System.out.println(value);
+//            } catch (IOException e1) {
+//                // Error while reading data from File, only print name and error
+//                e1.printStackTrace();
+//                return;
+//            }
         } else {
-            responseContent.append("\r\nBODY FileUpload: " + data.getHttpDataType().name() + ": " + data
-                    + "\r\n");
             if (data.getHttpDataType() == HttpDataType.FileUpload) {
+
                 FileUpload fileUpload = (FileUpload) data;
                 if (fileUpload.isCompleted()) {
-                    if (fileUpload.length() < 10000) {
-                        responseContent.append("\tContent of file\r\n");
-                        try {
-                            responseContent.append(fileUpload.getString(fileUpload.getCharset()));
-                        } catch (IOException e1) {
-                            // do nothing for the example
-                            e1.printStackTrace();
+
+                    ByteBuf byteBuf = fileUpload.content();
+                    FileOutputStream fileOutputStream = null;
+                    try {
+                        fileOutputStream = new FileOutputStream(fileUpload.getFilename());
+                        while (byteBuf.isReadable()) {
+                            fileOutputStream.write(byteBuf.readByte());
                         }
-                        responseContent.append("\r\n");
-                    } else {
-                        responseContent.append("\tFile too long to be printed out:" + fileUpload.length() + "\r\n");
+                    } catch (IOException e) {
+                        logger.error("Cannot write to the file",e);
+                    } finally {
+                        try {
+                            fileOutputStream.close();
+                        } catch (IOException e) {
+                           logger.error("Cannot close File Stream !",e);
+                        }
                     }
-                    // fileUpload.isInMemory();// tells if the file is in Memory
-                    // or on File
-                    // fileUpload.renameTo(dest); // enable to move into another
-                    // File dest
-                    // decoder.removeFileUploadFromClean(fileUpload); //remove
-                    // the File of to delete file
+
                 } else {
-                    responseContent.append("\tFile to be continued but should not!\r\n");
+                    logger.info("develop");
                 }
             }
         }
     }
 
-    private void writeResponse(Channel channel) {
-        // Convert the response content to a ChannelBuffer.
-        ByteBuf buf = copiedBuffer(responseContent.toString(), CharsetUtil.UTF_8);
-        responseContent.setLength(0);
+    private void writeOkResponse(Channel channel) {
+//        // Convert the response content to a ChannelBuffer.
+//        ByteBuf buf = copiedBuffer(responseContent.toString(), CharsetUtil.UTF_8);
+//        responseContent.setLength(0);
+//
+//        // Decide whether to close the connection or not.
+//        boolean close = request.headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
+//                || request.protocolVersion().equals(HttpVersion.HTTP_1_0)
+//                && !request.headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE, true);
+//
+//        // Build the response object.
+//        FullHttpResponse response = new DefaultFullHttpResponse(
+//                HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
+//        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
+//
+//        if (!close) {
+//            // There's no need to add 'Content-Length' header
+//            // if this is the last response.
+//            response.headers().setInt(HttpHeaderNames.CONTENT_LENGTH, buf.readableBytes());
+//        }
+//
+//        Set<Cookie> cookies;
+//        String value = request.headers().get(HttpHeaderNames.COOKIE);
+//        if (value == null) {
+//            cookies = Collections.emptySet();
+//        } else {
+//            cookies = ServerCookieDecoder.STRICT.decode(value);
+//        }
+//        if (!cookies.isEmpty()) {
+//            // Reset the cookies if necessary.
+//            for (Cookie cookie : cookies) {
+//                response.headers().add(HttpHeaderNames.SET_COOKIE, ServerCookieEncoder.STRICT.encode(cookie));
+//            }
+//        }
+      sendResponse(channel,HttpResponseStatus.OK,"Done");
+    }
 
+    private void writeErrorResponse(Channel channel) {
+        sendResponse(channel,HttpResponseStatus.INTERNAL_SERVER_ERROR, "File upload is failed");
+    }
+
+    private void sendResponse(Channel channel, HttpResponseStatus ok, String string) {
         // Decide whether to close the connection or not.
         boolean close = request.headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
                 || request.protocolVersion().equals(HttpVersion.HTTP_1_0)
                 && !request.headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE, true);
-
-        // Build the response object.
-        FullHttpResponse response = new DefaultFullHttpResponse(
-                HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
-
-        if (!close) {
-            // There's no need to add 'Content-Length' header
-            // if this is the last response.
-            response.headers().setInt(HttpHeaderNames.CONTENT_LENGTH, buf.readableBytes());
-        }
-
-        Set<Cookie> cookies;
-        String value = request.headers().get(HttpHeaderNames.COOKIE);
-        if (value == null) {
-            cookies = Collections.emptySet();
-        } else {
-            cookies = ServerCookieDecoder.STRICT.decode(value);
-        }
-        if (!cookies.isEmpty()) {
-            // Reset the cookies if necessary.
-            for (Cookie cookie : cookies) {
-                response.headers().add(HttpHeaderNames.SET_COOKIE, ServerCookieEncoder.STRICT.encode(cookie));
-            }
-        }
+        ByteBuf content = Unpooled.copiedBuffer(string, CharsetUtil.UTF_8);
+        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, ok, content);
+        response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "text/plain");
+        response.headers().set(HttpHeaders.Names.CONTENT_LENGTH, content.readableBytes());
         // Write the response.
         ChannelFuture future = channel.writeAndFlush(response);
         // Close the connection after the write operation is done if necessary.
@@ -293,93 +276,8 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
         }
     }
 
-    private void writeMenu(ChannelHandlerContext ctx) {
-        // print several HTML forms
-        // Convert the response content to a ChannelBuffer.
-        responseContent.setLength(0);
-
-        // create Pseudo Menu
-        responseContent.append("<html>");
-        responseContent.append("<head>");
-        responseContent.append("<title>Netty Test Form</title>\r\n");
-        responseContent.append("</head>\r\n");
-        responseContent.append("<body bgcolor=white><style>td{font-size: 12pt;}</style>");
-
-        responseContent.append("<table border=\"0\">");
-        responseContent.append("<tr>");
-        responseContent.append("<td>");
-        responseContent.append("<h1>Netty Test Form</h1>");
-        responseContent.append("Choose one FORM");
-        responseContent.append("</td>");
-        responseContent.append("</tr>");
-        responseContent.append("</table>\r\n");
-
-        // GET
-        responseContent.append("<CENTER>GET FORM<HR WIDTH=\"75%\" NOSHADE color=\"blue\"></CENTER>");
-        responseContent.append("<FORM ACTION=\"/formget\" METHOD=\"GET\">");
-        responseContent.append("<input type=hidden name=getform value=\"GET\">");
-        responseContent.append("<table border=\"0\">");
-        responseContent.append("<tr><td>Fill with value: <br> <input type=text name=\"info\" size=10></td></tr>");
-        responseContent.append("<tr><td>Fill with value: <br> <input type=text name=\"secondinfo\" size=20>");
-        responseContent
-                .append("<tr><td>Fill with value: <br> <textarea name=\"thirdinfo\" cols=40 rows=10></textarea>");
-        responseContent.append("</td></tr>");
-        responseContent.append("<tr><td><INPUT TYPE=\"submit\" NAME=\"Send\" VALUE=\"Send\"></INPUT></td>");
-        responseContent.append("<td><INPUT TYPE=\"reset\" NAME=\"Clear\" VALUE=\"Clear\" ></INPUT></td></tr>");
-        responseContent.append("</table></FORM>\r\n");
-        responseContent.append("<CENTER><HR WIDTH=\"75%\" NOSHADE color=\"blue\"></CENTER>");
-
-        // POST
-        responseContent.append("<CENTER>POST FORM<HR WIDTH=\"75%\" NOSHADE color=\"blue\"></CENTER>");
-        responseContent.append("<FORM ACTION=\"/formpost\" METHOD=\"POST\">");
-        responseContent.append("<input type=hidden name=getform value=\"POST\">");
-        responseContent.append("<table border=\"0\">");
-        responseContent.append("<tr><td>Fill with value: <br> <input type=text name=\"info\" size=10></td></tr>");
-        responseContent.append("<tr><td>Fill with value: <br> <input type=text name=\"secondinfo\" size=20>");
-        responseContent
-                .append("<tr><td>Fill with value: <br> <textarea name=\"thirdinfo\" cols=40 rows=10></textarea>");
-        responseContent.append("<tr><td>Fill with file (only file name will be transmitted): <br> "
-                + "<input type=file name=\"myfile\">");
-        responseContent.append("</td></tr>");
-        responseContent.append("<tr><td><INPUT TYPE=\"submit\" NAME=\"Send\" VALUE=\"Send\"></INPUT></td>");
-        responseContent.append("<td><INPUT TYPE=\"reset\" NAME=\"Clear\" VALUE=\"Clear\" ></INPUT></td></tr>");
-        responseContent.append("</table></FORM>\r\n");
-        responseContent.append("<CENTER><HR WIDTH=\"75%\" NOSHADE color=\"blue\"></CENTER>");
-
-        // POST with enctype="multipart/form-data"
-        responseContent.append("<CENTER>POST MULTIPART FORM<HR WIDTH=\"75%\" NOSHADE color=\"blue\"></CENTER>");
-        responseContent.append("<FORM ACTION=\"/formpostmultipart\" ENCTYPE=\"multipart/form-data\" METHOD=\"POST\">");
-        responseContent.append("<input type=hidden name=getform value=\"POST\">");
-        responseContent.append("<table border=\"0\">");
-        responseContent.append("<tr><td>Fill with value: <br> <input type=text name=\"info\" size=10></td></tr>");
-        responseContent.append("<tr><td>Fill with value: <br> <input type=text name=\"secondinfo\" size=20>");
-        responseContent
-                .append("<tr><td>Fill with value: <br> <textarea name=\"thirdinfo\" cols=40 rows=10></textarea>");
-        responseContent.append("<tr><td>Fill with file: <br> <input type=file name=\"myfile\">");
-        responseContent.append("</td></tr>");
-        responseContent.append("<tr><td><INPUT TYPE=\"submit\" NAME=\"Send\" VALUE=\"Send\"></INPUT></td>");
-        responseContent.append("<td><INPUT TYPE=\"reset\" NAME=\"Clear\" VALUE=\"Clear\" ></INPUT></td></tr>");
-        responseContent.append("</table></FORM>\r\n");
-        responseContent.append("<CENTER><HR WIDTH=\"75%\" NOSHADE color=\"blue\"></CENTER>");
-
-        responseContent.append("</body>");
-        responseContent.append("</html>");
-
-        ByteBuf buf = copiedBuffer(responseContent.toString(), CharsetUtil.UTF_8);
-        // Build the response object.
-        FullHttpResponse response = new DefaultFullHttpResponse(
-                HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
-
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
-        response.headers().setInt(HttpHeaderNames.CONTENT_LENGTH, buf.readableBytes());
-
-        // Write the response.
-        ctx.channel().writeAndFlush(response);
-    }
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        logger.log(Level.WARNING, responseContent.toString(), cause);
         ctx.channel().close();
     }
 }

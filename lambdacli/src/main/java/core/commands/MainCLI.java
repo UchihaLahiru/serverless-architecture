@@ -1,6 +1,9 @@
 package core.commands;
 
 
+import core.utilities.FileType;
+import core.utilities.HTTPFileUpload;
+import core.utilities.HttpUploadClient;
 import org.springframework.shell.core.CommandMarker;
 import org.springframework.shell.core.annotation.CliCommand;
 import org.springframework.shell.core.annotation.CliOption;
@@ -15,11 +18,22 @@ public class MainCLI implements CommandMarker {
 
     @CliCommand(value = { "create_func", "cf" })
     public String createFuntion(
-            @CliOption(key = "name",mandatory = true) String name,
-            @CliOption(key = "file",mandatory = true) String file,
-            @CliOption(key="runtime",mandatory = true)String runtime,
-            @CliOption(key="event",mandatory = true)String event) throws FileNotFoundException {
-        return name+file+runtime+event;
+//            @CliOption(key = "name",mandatory = true) String name,
+            @CliOption(key = "file",mandatory = true) String file
+//            @CliOption(key="runtime",mandatory = true)String runtime,
+//            @CliOption(key="event",mandatory = true)String event
+    ) throws FileNotFoundException {
+
+        String result=null;
+        try {
+            result= HTTPFileUpload.uploadFile(FileType.JAVA,new File(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+            result = "wrong";
+        }
+
+
+        return result;
     }
 
     @CliCommand(value = { "list_func", "lf" })

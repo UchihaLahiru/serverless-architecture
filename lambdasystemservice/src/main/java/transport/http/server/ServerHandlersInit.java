@@ -22,6 +22,7 @@ public class ServerHandlersInit extends ChannelInitializer<SocketChannel> {
         ChannelPipeline channelPipeline = socketChannel.pipeline();
         channelPipeline.addLast(
                 new HttpServerCodec(),
+                new HttpUploadServerHandler(),
                 new HttpObjectAggregator(1048576),
                 new ServerInPutHandler(instance));
 
