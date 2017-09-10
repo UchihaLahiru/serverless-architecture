@@ -63,6 +63,7 @@
         <netty.all.version>4.1.12.Final</netty.all.version>
         <log4j.version>1.2.17</log4j.version>
         <spymemcached.version>2.12.1</spymemcached.version>
+        <jetcd.version>0.1.0-SNAPSHOT</jetcd.version>
         <jackson-databind.version>2.8.7</jackson-databind.version>
     </properties>
 </project>

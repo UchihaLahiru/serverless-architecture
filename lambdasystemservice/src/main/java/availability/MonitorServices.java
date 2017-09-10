@@ -36,7 +36,7 @@ public class MonitorServices {
         MonitorServices monitor = new MonitorServices();
         List<? extends User> osUser = monitor.getCurrentUsers();
         for(User user: osUser){
-            new UserPing(monitor.os,monitor.os);
+            new UserPing(monitor.os,monitor.os).start();
         }
     }
 
