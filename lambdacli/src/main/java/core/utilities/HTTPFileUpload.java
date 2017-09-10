@@ -1,6 +1,5 @@
 package core.utilities;
 
-import okhttp3.MediaType;
 
 import java.io.*;
 
