@@ -12,29 +12,28 @@ import java.util.ArrayList;
  */
 public class UserCallImplement implements UserCall {
 
-    OSClient.OSClientV2 os ;
+    OSClient.OSClientV2 os;
     ServerLaunchImplement serverlaunch;
 
 
-    public UserCallImplement(){
+    public UserCallImplement() {
         this.serverlaunch = null;
         this.os = null;
     }
 
     @Override
-    public void createFunction(String functionName, String file, String language, String user){
+    public void createFunction(String functionName, String file, String language, String user) {
 
 
         // check the user
-        if(user.equals("admin")){
+        if (user.equals("admin")) {
             this.os = OpenstackAdminConnection.getOpenstackAdminConnection().getOSclient();
-        }
-        else{
+        } else {
             // for user
 //            this.os = OpenstackUserConnection("")
         }
 
-        if(isNameAvailable(functionName)) {
+        if (isNameAvailable(functionName)) {
             // create the server
             this.serverlaunch = new ServerLaunchImplement(this.os);
             Server server = this.serverlaunch.createOSVInstance(functionName,
@@ -49,12 +48,11 @@ public class UserCallImplement implements UserCall {
 
 
     @Override
-    public void deleteFunction(String functionName, String user){
+    public void deleteFunction(String functionName, String user) {
         // check the user
-        if(user.equals("admin")){
+        if (user.equals("admin")) {
             this.os = OpenstackAdminConnection.getOpenstackAdminConnection().getOSclient();
-        }
-        else{
+        } else {
             // for user
 //            this.os = OpenstackUserConnection("")
         }
@@ -66,14 +64,12 @@ public class UserCallImplement implements UserCall {
     }
 
 
-
     @Override
-    public void listFunction(String user){
+    public void listFunction(String user) {
         // check the user
-        if(user.equals("admin")){
+        if (user.equals("admin")) {
             this.os = OpenstackAdminConnection.getOpenstackAdminConnection().getOSclient();
-        }
-        else{
+        } else {
             // for user
 //            this.os = OpenstackUserConnection("")
         }
@@ -82,27 +78,26 @@ public class UserCallImplement implements UserCall {
     }
 
     @Override
-    public void invokeFunction(String functionName,boolean blocking, String[] args){
+    public void invokeFunction(String functionName, boolean blocking, String[] args) {
 
     }
 
 
     @Override
-    public void updateFunction(String functionName, String file){
+    public void updateFunction(String functionName, String file) {
 
     }
 
 
     // get imageID for selected language environment
-    private String getImageID(String languageEnv){
+    private String getImageID(String languageEnv) {
         // get data from openstack base
         return "797cb7f8-543a-4a31-b5b2-58841321b25a";
     }
 
 
-
     // get netowork assigned for the user
-    private ArrayList<String> getNetworks(String user){
+    private ArrayList<String> getNetworks(String user) {
         ArrayList<String> list = new ArrayList<>();
         // get if network for the user
         list.add("8a942382-4c75-4da7-8170-15a5e53fbdbb");
@@ -111,15 +106,14 @@ public class UserCallImplement implements UserCall {
     }
 
 
-
     // get the instance uuid from etcd
-    private String getInstanceID(String serviceName){
+    private String getInstanceID(String serviceName) {
         // get data from etcd
         return null;
     }
 
     // check name is unique
-    private boolean isNameAvailable(String name){
+    private boolean isNameAvailable(String name) {
         // check in etcd
         return true;
 

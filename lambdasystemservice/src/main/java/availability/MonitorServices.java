@@ -13,34 +13,29 @@ public class MonitorServices {
     List<? extends User> currentUsers;
     OSClient.OSClientV2 os;
 
-    public MonitorServices(){
+    public MonitorServices() {
         this.os = OpenstackAdminConnection.getOpenstackAdminConnection().getOSclient();
     }
 
-
-
+    public static void main(String[] args) {
+        MonitorServices monitor = new MonitorServices();
+        List<? extends User> osUser = monitor.getCurrentUsers();
+        for (User user : osUser) {
+            new UserPing(monitor.os, monitor.os);
+        }
+    }
 
     // get users
-    public List<? extends User> getCurrentUsers(){
+    public List<? extends User> getCurrentUsers() {
         try {
             List<? extends User> list = os.identity().users().list();
             return list;
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
 
     }
-
-    public static void main(String [] args){
-        MonitorServices monitor = new MonitorServices();
-        List<? extends User> osUser = monitor.getCurrentUsers();
-        for(User user: osUser){
-            new UserPing(monitor.os,monitor.os);
-        }
-    }
-
-
 
 
 }

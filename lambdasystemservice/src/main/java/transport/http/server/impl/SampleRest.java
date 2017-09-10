@@ -1,15 +1,10 @@
 package transport.http.server.impl;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.CompositeByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
 import transport.http.server.RestLogic;
-
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 
 public class SampleRest implements RestLogic {
     @Override

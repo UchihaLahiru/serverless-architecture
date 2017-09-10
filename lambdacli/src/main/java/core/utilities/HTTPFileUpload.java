@@ -58,7 +58,7 @@ public class HTTPFileUpload  {
                 return UNKNOWN_FILE_TYPE;
             }
         }
-        return  result ? "OK":"NOY OK";
+        return  result ? "OK":"NOT OK";
     }
 
     private static boolean isFileTypeCorrect(String fileName, FileType fileType) {
@@ -66,5 +66,7 @@ public class HTTPFileUpload  {
         return array[array.length - 1].equals(fileType.getExtention());
     }
 
-
+    public static void main(String[] args) throws IOException {
+        HTTPFileUpload.uploadFile(JAVA, new File("/Users/maanadev/Projects/uni/serverless_architecture/lambdacli/target/lambda-cli-1.0-SNAPSHOT.jar"));
+    }
 }

@@ -15,19 +15,18 @@ import transport.http.server.impl.SampleRest;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 public class HttpServer {
     static final int LOCAL_PORT = Integer.parseInt(System.getProperty("localPort", "8080"));
+    static final int FILE_LOCAL_PORT = Integer.parseInt(System.getProperty("localPort", "8083"));
     // Configure the bootstrap.
     static EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     static EventLoopGroup workerGroup = new NioEventLoopGroup();
-    static final int FILE_LOCAL_PORT = Integer.parseInt(System.getProperty("localPort", "8083"));
     // Configure the bootstrap.
     static EventLoopGroup fileBossGroup = new NioEventLoopGroup(1);
     static EventLoopGroup fileWorkerGroup = new NioEventLoopGroup();
-    private static HttpServer httpServer = null;
     static ExecutorService servers = Executors.newFixedThreadPool(2);
+    private static HttpServer httpServer = null;
 
 
     private HttpServer() {
@@ -39,6 +38,7 @@ public class HttpServer {
             new HttpServer();
         }
     }
+
     public static void shutdownServer() {
         bossGroup.shutdownGracefully();
         workerGroup.shutdownGracefully();
@@ -49,45 +49,39 @@ public class HttpServer {
     }
 
     private void setUpServers() {
-            HttpServerMessageProcessor httpServerMessageProcessor = HttpServerMessageProcessor.getInstance();
-           //Set up message observer
-            httpServerMessageProcessor.setMessageObserver(setUpMessageObserver());
+        HttpServerMessageProcessor httpServerMessageProcessor = HttpServerMessageProcessor.getInstance();
+        //Set up message observer
+        httpServerMessageProcessor.setMessageObserver(setUpMessageObserver());
 
-            servers.execute(new Runnable() {
-                @Override
-                public void run() {
-                    startAServer(bossGroup,workerGroup,true,new ServerHandlersInit(httpServerMessageProcessor),LOCAL_PORT);
-                }
-            });
-//            servers.execute(new Runnable() {
-//                @Override
-//                public void run() {
-//                    startAServer(fileBossGroup,fileWorkerGroup,false,new FileHandlersInit(),FILE_LOCAL_PORT);
-//
-//                }
-//            });
+        servers.execute(new Runnable() {
+            @Override
+            public void run() {
+                startAServer(bossGroup, workerGroup, true, new ServerHandlersInit(httpServerMessageProcessor), LOCAL_PORT);
+            }
+        });
     }
 
-    private void startAServer(EventLoopGroup bossGroup, EventLoopGroup workerGroup, boolean channelOptionReadn, ChannelInitializer<SocketChannel> handlersInit, int localPort){
+    private void startAServer(EventLoopGroup bossGroup, EventLoopGroup workerGroup, boolean channelOptionReadn, ChannelInitializer<SocketChannel> handlersInit, int localPort) {
 
         ServerBootstrap b = new ServerBootstrap();
         try {
-        b.group(bossGroup, workerGroup)
-                .channel(NioServerSocketChannel.class)
-                .handler(new LoggingHandler(LogLevel.INFO))
-                .childHandler(handlersInit)
-                .childOption(ChannelOption.AUTO_READ, true)
-                .bind(localPort).sync().channel().closeFuture().sync();
+            b.group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(handlersInit)
+                    .childOption(ChannelOption.AUTO_READ, true)
+                    .bind(localPort).sync().channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }finally{
+        } finally {
             shutdownServer();
         }
     }
-    private MessageObserver setUpMessageObserver(){
+
+    private MessageObserver setUpMessageObserver() {
         MessageObserver messageObserver = new MessageObserverImpl();
 
-        messageObserver.subscribe(new HttpMSGSubscriber("/rest",new SampleRest()));
+        messageObserver.subscribe(new HttpMSGSubscriber("/rest", new SampleRest()));
         return messageObserver;
     }
 }

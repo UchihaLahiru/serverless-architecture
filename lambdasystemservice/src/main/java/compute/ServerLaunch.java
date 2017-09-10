@@ -10,22 +10,22 @@ import java.util.List;
  */
 public interface ServerLaunch {
 
-//    create a osv instance in the cluster
+    //    create a osv instance in the cluster
     Server createOSVInstance(String serviceName, String imageID, List<String> network);
 
-//    start the created osv instance
+    //    start the created osv instance
     ActionResponse startOSVinstance(String serviceName);
 
-//    start the created osv instance
+    //    start the created osv instance
     ActionResponse stopOSVinstance(String serviceName);
 
-//    destroy existing osv instance
+    //    destroy existing osv instance
     void destroyOSVInstance(String serviceName);
 
-//    suspend a osv instance
+    //    suspend a osv instance
     ActionResponse pauseOSVInstance(String serviceName);
 
-//    resume suspended osv instance
+    //    resume suspended osv instance
     ActionResponse resumeOSVInstance(String serviceName);
 
 
@@ -37,6 +37,6 @@ public interface ServerLaunch {
     void createSubnet();
 */
 
-//    port a funcion file to the osv instance
+    //    port a funcion file to the osv instance
     boolean portFunctionCode(String filelocation, String serverId);
 }

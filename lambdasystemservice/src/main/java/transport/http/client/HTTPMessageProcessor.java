@@ -3,8 +3,6 @@ package transport.http.client;
 import io.netty.handler.codec.http.FullHttpResponse;
 import transport.MessageProcessor;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 public class HTTPMessageProcessor implements MessageProcessor {
@@ -23,7 +21,6 @@ public class HTTPMessageProcessor implements MessageProcessor {
             action.accept((FullHttpResponse) object);
         }
     }
-
 
 
 }

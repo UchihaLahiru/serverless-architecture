@@ -4,7 +4,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpRequest;
 import transport.MessageProcessor;
-import transport.http.client.impl.HttpClientImpl;
 
 import java.net.URI;
 
@@ -12,7 +11,7 @@ public class SimpleHttpClientImpl extends HttpClientImpl {
 
     private URI uri;
 
-    protected SimpleHttpClientImpl(URI uri){
+    protected SimpleHttpClientImpl(URI uri) {
 
         this.uri = uri;
     }

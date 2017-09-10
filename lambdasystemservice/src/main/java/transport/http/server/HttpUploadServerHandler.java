@@ -18,17 +18,8 @@ import java.net.URI;
 public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObject> {
 
     private static final Logger logger = Logger.getLogger(HttpUploadServerHandler.class.getName());
-
-    private HttpRequest request;
-
-    private boolean isFileUpload = true;
-    private HttpData partialContent;
-
-
     private static final HttpDataFactory factory =
             new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE); // Disk if size exceed
-
-    private HttpPostRequestDecoder decoder;
 
     static {
         DiskFileUpload.deleteOnExitTemporaryFile = false; // should delete file
@@ -39,6 +30,11 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
         // exit (in normal exit)
         DiskAttribute.baseDirectory = null; // system temp directory
     }
+
+    private HttpRequest request;
+    private boolean isFileUpload = true;
+    private HttpData partialContent;
+    private HttpPostRequestDecoder decoder;
 
     HttpUploadServerHandler() {
         super(false);
@@ -59,7 +55,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
 
                 URI uri = new URI(request.uri());
                 logger.info(uri.getPath());
-                if (!uri.getPath().startsWith("/file")) {
+                if (!(uri.getPath().startsWith("/file") && HttpPostRequestDecoder.isMultipart(request))) {
                     notAFileUpload(ctx, msg);
                     return;
                 }
@@ -67,7 +63,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                 try {
                     decoder = new HttpPostRequestDecoder(factory, request);
                 } catch (ErrorDataDecoderException e1) {
-                    logger.error("Decoder error",e1);
+                    logger.error("Decoder error", e1);
                     writeErrorResponse(ctx.channel());
                     ctx.channel().close();
                     return;
@@ -98,10 +94,6 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                     }
                 }
             }
-//            } else {
-//                writeOkResponse(ctx.channel());
-//            }
-
 
         } else {
 
@@ -109,6 +101,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
         }
 
     }
+
 
     private void notAFileUpload(ChannelHandlerContext ctx, HttpObject msg) {
         isFileUpload = false;
@@ -149,7 +142,6 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
             if (data != null) {
                 StringBuilder builder = new StringBuilder();
                 if (partialContent == null) {
-                    System.out.println("partialCOntent");
                     partialContent = (HttpData) data;
                     if (partialContent instanceof FileUpload) {
                         builder.append("Start FileUpload: ")
@@ -171,7 +163,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
             }
         } catch (EndOfDataDecoderException e1) {
 
-          logger.info("Done uploading");
+            logger.info("Done uploading");
 
         }
     }
@@ -202,12 +194,12 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                             fileOutputStream.write(byteBuf.readByte());
                         }
                     } catch (IOException e) {
-                        logger.error("Cannot write to the file",e);
+                        logger.error("Cannot write to the file", e);
                     } finally {
                         try {
                             fileOutputStream.close();
                         } catch (IOException e) {
-                           logger.error("Cannot close File Stream !",e);
+                            logger.error("Cannot close File Stream !", e);
                         }
                     }
 
@@ -252,11 +244,11 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
 //                response.headers().add(HttpHeaderNames.SET_COOKIE, ServerCookieEncoder.STRICT.encode(cookie));
 //            }
 //        }
-      sendResponse(channel,HttpResponseStatus.OK,"Done");
+        sendResponse(channel, HttpResponseStatus.OK, "Done");
     }
 
     private void writeErrorResponse(Channel channel) {
-        sendResponse(channel,HttpResponseStatus.INTERNAL_SERVER_ERROR, "File upload is failed");
+        sendResponse(channel, HttpResponseStatus.INTERNAL_SERVER_ERROR, "File upload is failed");
     }
 
     private void sendResponse(Channel channel, HttpResponseStatus ok, String string) {

@@ -1,7 +1,6 @@
 package connections;
 
 import org.openstack4j.api.OSClient;
-
 import org.openstack4j.api.exceptions.AuthenticationException;
 import org.openstack4j.openstack.OSFactory;
 
@@ -12,21 +11,21 @@ import org.openstack4j.openstack.OSFactory;
 public class OpenstackUserConnection {
     private OSClient.OSClientV2 os;
 
-    protected OpenstackUserConnection(String connectionEndpoint,String connectionPassword,String user){
+    protected OpenstackUserConnection(String connectionEndpoint, String connectionPassword, String user) {
         try {
             os = OSFactory.builderV2()
                     .endpoint(connectionEndpoint)
                     .credentials(user, connectionPassword)
                     .tenantName(user)                       //check the tenant name
                     .authenticate();
-        }catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             e.printStackTrace();
         }
 
 
     }
 
-    public OSClient.OSClientV2 getOSclient(){
+    public OSClient.OSClientV2 getOSclient() {
         return os;
     }
 }

@@ -25,7 +25,7 @@ public class HttpClientImpl implements HttpClient {
 
     }
 
-    public void sendHttpRequest(HttpRequest httpRequest, MessageProcessor messageProcessor,URI uri) {
+    public void sendHttpRequest(HttpRequest httpRequest, MessageProcessor messageProcessor, URI uri) {
         String host = uri.getHost();
         int port = uri.getPort();
 
@@ -60,7 +60,7 @@ public class HttpClientImpl implements HttpClient {
         return request;
     }
 
-    public FullHttpRequest getDefaultPOSTHttpRequest(ByteBuf content, String contentType,URI uri) {
+    public FullHttpRequest getDefaultPOSTHttpRequest(ByteBuf content, String contentType, URI uri) {
         FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.POST, uri.getRawPath());
         request.headers().set(HttpHeaderNames.HOST, uri.getHost());
         request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
@@ -70,9 +70,9 @@ public class HttpClientImpl implements HttpClient {
 
     }
 
-    public FullHttpRequest getDefaultPOSTHttpRequest(String content,URI uri) {
+    public FullHttpRequest getDefaultPOSTHttpRequest(String content, URI uri) {
         ByteBuf bbuf = Unpooled.copiedBuffer(content, UTF_8);
-        return getDefaultPOSTHttpRequest(bbuf, "application/json",uri);
+        return getDefaultPOSTHttpRequest(bbuf, "application/json", uri);
     }
 
 }
