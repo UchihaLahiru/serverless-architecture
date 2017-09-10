@@ -52,7 +52,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof FullHttpRequest) {
             EtcdUtil.getValue("localhost").thenAccept(x -> {
 
-                String val = String.valueOf(x.getKvs(0).getValue().toString(StandardCharsets.UTF_8));
+                String val =String.valueOf(x.getKvs().get(0).getValue().toString(StandardCharsets.UTF_8));
                 State stateImpl = StateImplJsonHelp.getObject(val);
 
                 if (stateImpl.getState() == InstanceStates.DOWN) {
