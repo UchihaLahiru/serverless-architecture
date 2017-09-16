@@ -22,6 +22,7 @@
         <spymemcached.version>2.12.1</spymemcached.version>
         <jackson-databind.version>2.8.7</jackson-databind.version>
         <jetcd.version>0.1.0-SNAPSHOT</jetcd.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
     </properties>
     <build>
         <plugins>

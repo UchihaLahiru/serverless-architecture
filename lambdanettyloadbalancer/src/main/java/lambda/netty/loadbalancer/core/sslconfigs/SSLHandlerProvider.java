@@ -25,6 +25,8 @@ public class SSLHandlerProvider {
     private static final String CERT_PASSWORD = "123456";
     private static SSLContext serverSSLContext = null;
 
+
+    private SSLHandlerProvider(){}
     public static SslHandler getSSLHandler() {
         SSLEngine sslEngine = null;
         if (serverSSLContext == null) {

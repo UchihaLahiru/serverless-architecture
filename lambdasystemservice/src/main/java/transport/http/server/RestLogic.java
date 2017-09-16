@@ -3,7 +3,16 @@ package transport.http.server;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 
-public interface RestLogic {
+public abstract class RestLogic {
+    private String path;
 
-    FullHttpResponse process(FullHttpRequest fullHttpRequest);
+    public abstract FullHttpResponse process(FullHttpRequest fullHttpRequest);
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
 }
