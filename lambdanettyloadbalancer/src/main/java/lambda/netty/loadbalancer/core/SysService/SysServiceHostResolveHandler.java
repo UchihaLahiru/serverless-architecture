@@ -6,6 +6,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
 import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
 import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
+import lambda.netty.loadbalancer.core.launch.Launcher;
 import lambda.netty.loadbalancer.core.loadbalance.LoadBalanceUtil;
 import lambda.netty.loadbalancer.core.loadbalance.StateImplJsonHelp;
 import lambda.netty.loadbalancer.core.loadbalance.statemodels.InstanceStates;
@@ -19,8 +20,8 @@ import java.nio.charset.StandardCharsets;
 public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     final static Logger logger = Logger.getLogger(SysServiceHostResolveHandler.class);
     private final static String HOST = "Host";
-    private static final String SYS_HOST = "127.0.0.1";
-    private static final int SYS_PORT = 8081;
+    private static final String SYS_HOST = Launcher.getStringValues("sys-service.connections.connection.host").get(0);
+    private static final int SYS_PORT = Launcher.getIntValues("sys-service.connections.connection.port").get(0);
     Channel remoteHostChannel = null;
     EventLoopGroup remoteHostEventLoopGroup;
 
@@ -52,7 +53,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof FullHttpRequest) {
             EtcdUtil.getValue("localhost").thenAccept(x -> {
 
-                String val =String.valueOf(x.getKvs().get(0).getValue().toString(StandardCharsets.UTF_8));
+                String val = String.valueOf(x.getKvs().get(0).getValue().toString(StandardCharsets.UTF_8));
                 State stateImpl = StateImplJsonHelp.getObject(val);
 
                 if (stateImpl.getState() == InstanceStates.DOWN) {

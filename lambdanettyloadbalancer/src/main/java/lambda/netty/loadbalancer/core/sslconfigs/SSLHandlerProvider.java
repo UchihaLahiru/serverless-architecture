@@ -1,10 +1,10 @@
 package lambda.netty.loadbalancer.core.sslconfigs;
 
 import io.netty.handler.ssl.SslHandler;
+import lambda.netty.loadbalancer.core.launch.Launcher;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
@@ -16,17 +16,19 @@ import java.security.cert.CertificateException;
 public class SSLHandlerProvider {
     private static final Logger logger = Logger.getLogger(SSLHandlerProvider.class);
 
-    private static final String PROTOCOL = "TLS";
+    private static final String PROTOCOL = Launcher.getStringValue("transport.ssl-config.protocol");
     private static final String ALGORITHM_SUN_X509 = "SunX509";
     private static final String ALGORITHM = "ssl.KeyManagerFactory.algorithm";
-    private static final String KEYSTORE = "ssl_certs/mytestkeys.jks";
-    private static final String KEYSTORE_TYPE = "JKS";
-    private static final String KEYSTORE_PASSWORD = "123456";
-    private static final String CERT_PASSWORD = "123456";
+    private static final String KEYSTORE = Launcher.getStringValue("transport.ssl-config.keystore.file");
+    private static final String KEYSTORE_TYPE = Launcher.getStringValue("transport.ssl-config.keystore.type");
+    private static final String KEYSTORE_PASSWORD = Launcher.getStringValue("transport.ssl-config.keystore.password");
+    private static final String CERT_PASSWORD = Launcher.getStringValue("transport.ssl-config.cert.password");
     private static SSLContext serverSSLContext = null;
 
 
-    private SSLHandlerProvider(){}
+    private SSLHandlerProvider() {
+    }
+
     public static SslHandler getSSLHandler() {
         SSLEngine sslEngine = null;
         if (serverSSLContext == null) {
@@ -51,7 +53,7 @@ public class SSLHandlerProvider {
         KeyStore ks = null;
         InputStream inputStream = null;
         try {
-            inputStream = new FileInputStream(SSLHandlerProvider.class.getClassLoader().getResource(KEYSTORE).getFile());
+            inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(KEYSTORE);
             ks = KeyStore.getInstance(KEYSTORE_TYPE);
             ks.load(inputStream, KEYSTORE_PASSWORD.toCharArray());
         } catch (IOException e) {

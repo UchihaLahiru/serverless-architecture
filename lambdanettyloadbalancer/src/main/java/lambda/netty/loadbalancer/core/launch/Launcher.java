@@ -1,12 +1,12 @@
-package launch;
+package lambda.netty.loadbalancer.core.launch;
 
+import lambda.netty.loadbalancer.core.Server;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.log4j.Logger;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.List;
 
 public class Launcher {
 
@@ -26,9 +26,6 @@ public class Launcher {
         }
     }
 
-    public static final String LAUNCHER_THREADS = "launcher.threads";
-    private static final ExecutorService service = Executors.newFixedThreadPool(getIntValue(LAUNCHER_THREADS));
-
     public static String getStringValue(String tag) {
         return xmlConfiguration.getString(tag);
     }
@@ -38,9 +35,24 @@ public class Launcher {
         return xmlConfiguration.getInt(tag);
     }
 
+    public static List<String> getStringValues(String key) {
+        Object obj = xmlConfiguration.getProperty(key);
+        if (obj instanceof List) {
+            return (List) obj;
+        }
+        return null;
+    }
+
+    public static List<Integer> getIntValues(String key) {
+        Object obj = xmlConfiguration.getProperty(key);
+        if (obj instanceof List) {
+            return (List) obj;
+        }
+        return null;
+    }
 
     public static void main(String[] args) {
         logger.info("Starting HTTP Transport service");
-        service.submit(new HttpServerLauncher());
+        Server.init();
     }
 }

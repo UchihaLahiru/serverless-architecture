@@ -4,7 +4,6 @@ import com.coreos.jetcd.Client;
 import com.coreos.jetcd.KV;
 import com.coreos.jetcd.Txn;
 import com.coreos.jetcd.Watch;
-import com.coreos.jetcd.api.RangeResponse;
 import com.coreos.jetcd.data.ByteSequence;
 import com.coreos.jetcd.kv.GetResponse;
 import com.coreos.jetcd.kv.PutResponse;
@@ -16,32 +15,25 @@ import com.coreos.jetcd.options.GetOption;
 import com.coreos.jetcd.options.PutOption;
 import com.coreos.jetcd.watch.WatchEvent;
 import com.coreos.jetcd.watch.WatchResponse;
-import lambda.netty.loadbalancer.core.loadbalance.LoadBalanceUtil;
-import lambda.netty.loadbalancer.core.loadbalance.StateImplJsonHelp;
-import lambda.netty.loadbalancer.core.loadbalance.statemodels.InstanceStates;
-import lambda.netty.loadbalancer.core.loadbalance.statemodels.State;
-import lambda.netty.loadbalancer.core.proxy.ProxyEvent;
+import lambda.netty.loadbalancer.core.launch.Launcher;
 import org.apache.log4j.Logger;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class EtcdUtil {
     final static Logger logger = Logger.getLogger(EtcdUtil.class);
-    public static String ETCD_CLUSTER = "http://localhost:2379";
+    public static String ETCD_CLUSTER = Launcher.getStringValue("etcd-cluster.connections.url");
     private static KV kvClient = null;
-    private static Client client=null;
+    private static Client client = null;
     private static GetOption getOption = GetOption.newBuilder().withSerializable(true).build();
 
     static {
 
-        if (kvClient == null && client==null) {
-                client = Client.builder().endpoints(ETCD_CLUSTER).build();
-                kvClient =client.getKVClient();
+        if (kvClient == null && client == null) {
+            client = Client.builder().endpoints(ETCD_CLUSTER).build();
+            kvClient = client.getKVClient();
         }
     }
 
@@ -60,7 +52,7 @@ public class EtcdUtil {
         return responseCompletableFuture;
     }
 
-    public static  CompletableFuture<GetResponse> getValue(String s_key) throws EtcdClientException {
+    public static CompletableFuture<GetResponse> getValue(String s_key) throws EtcdClientException {
         ByteSequence key = ByteSequence.fromString(s_key);
         CompletableFuture<GetResponse> rangeResponse = null;
         if (kvClient == null) {
@@ -71,10 +63,10 @@ public class EtcdUtil {
         }
 
 
-
         return rangeResponse;
     }
-    public static boolean txnPutValue(String s_key, String s_value, long version){
+
+    public static boolean txnPutValue(String s_key, String s_value, long version) {
         ByteSequence key = ByteSequence.fromString(s_key);
         ByteSequence value = ByteSequence.fromString(s_value);
 
@@ -82,22 +74,22 @@ public class EtcdUtil {
         Cmp cmp = new Cmp(key, Cmp.Op.GREATER, CmpTarget.version(version));
         TxnResponse txnResponse = null;
         try {
-            txnResponse= txn.If(cmp).Then(Op.put(key,value,PutOption.DEFAULT)).commit().get();
+            txnResponse = txn.If(cmp).Then(Op.put(key, value, PutOption.DEFAULT)).commit().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
-        return  txnResponse.isSucceeded();
+        return txnResponse.isSucceeded();
     }
 
-    public static void txngetValue(String s_key, long version){
+    public static void txngetValue(String s_key, long version) {
         ByteSequence key = ByteSequence.fromString(s_key);
         Txn txn = kvClient.txn();
         Cmp cmp = new Cmp(key, Cmp.Op.GREATER, CmpTarget.version(version));
         TxnResponse txnResponse = null;
         try {
-           txnResponse= txn.If(cmp).Then(Op.get(key,GetOption.DEFAULT)).commit().get();
+            txnResponse = txn.If(cmp).Then(Op.get(key, GetOption.DEFAULT)).commit().get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -111,6 +103,7 @@ public class EtcdUtil {
         System.out.println(txnResponse);
 //        System.out.println(txnResponse.getGetResponses());
     }
+
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         Watch watch = null;
         Watch.Watcher watcher = null;
@@ -128,7 +121,7 @@ public class EtcdUtil {
                     System.out.println(Optional.ofNullable(event.getKeyValue().getKey())
                             .map(ByteSequence::toStringUtf8)
                             .orElse(""));
-                    System.out.println( Optional.ofNullable(event.getKeyValue().getValue())
+                    System.out.println(Optional.ofNullable(event.getKeyValue().getValue())
                             .map(ByteSequence::toStringUtf8)
                             .orElse(""));
 

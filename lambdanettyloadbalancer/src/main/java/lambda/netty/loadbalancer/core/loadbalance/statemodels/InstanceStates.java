@@ -17,7 +17,7 @@ package lambda.netty.loadbalancer.core.loadbalance.statemodels;
 public enum InstanceStates {
 
 
-    DOWN("DOWN", 00), RUNNING("RUNNING", 01),STARTING("STARTING",03);
+    DOWN("DOWN", 00), RUNNING("RUNNING", 01), STARTING("STARTING", 03);
     private String state;
     private int code;
 

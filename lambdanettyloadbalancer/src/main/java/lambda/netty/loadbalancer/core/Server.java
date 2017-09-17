@@ -9,14 +9,18 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import lambda.netty.loadbalancer.core.launch.Launcher;
 import lambda.netty.loadbalancer.core.sslconfigs.SSLHandlerProvider;
 
 public class Server {
-    static final int LOCAL_PORT = Integer.parseInt(System.getProperty("localPort", "8080"));
+    public static final String TRANSPORT_SERVER_PORT = "transport.server.port";
+    public static final String TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT = "transport.server.bossGroupThreadCount";
 
-    public static void main(String[] args) {
+    static final int LOCAL_PORT = Launcher.getIntValue(TRANSPORT_SERVER_PORT);
+
+    public static void init() {
         // Configure the bootstrap.
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
+        EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getIntValue(TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         EventLoopGroup remoteHostEventLoopGroup = new NioEventLoopGroup();
 
