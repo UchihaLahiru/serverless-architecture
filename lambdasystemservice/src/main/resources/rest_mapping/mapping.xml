@@ -21,13 +21,13 @@
 
     <!--#################################REST LOGIC REGISTRATION##############################################################-->
     <!-- Define the logic -->
-    <bean id="restAction2" class="transport.http.server.impl.SampleRest">
-        <property name="path" value="/rest2"></property>
+    <bean id="instanceManager" class="api.InstanceStateManager">
+        <property name="path" value="/state"></property>
     </bean>
     <!-- Bind the logic to a Subscriber-->
     <bean id="HttpMSGSubscriber_rest2" class="transport.http.server.impl.HttpMSGSubscriber">
         <property name="action">
-            <ref bean="restAction2"></ref>
+            <ref bean="instanceManager"></ref>
         </property>
     </bean>
     <!--###############################################################################################-->

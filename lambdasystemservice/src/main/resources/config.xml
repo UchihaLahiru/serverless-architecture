@@ -6,7 +6,7 @@
     <transport>
         <server>
             <host>localhost</host>
-            <port>8080</port>
+            <port>8084</port>
             <bossGroupThreadCount>1</bossGroupThreadCount>
         </server>
     </transport>

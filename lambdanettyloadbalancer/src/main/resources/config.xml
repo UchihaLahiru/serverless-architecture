@@ -11,7 +11,8 @@
         </server>
 
         <ssl-config>
-            <enabled>true</enabled>
+            <enabled>false</enabled>
+
             <protocol>TLS</protocol>
             <keystore>
                 <type>JKS</type>

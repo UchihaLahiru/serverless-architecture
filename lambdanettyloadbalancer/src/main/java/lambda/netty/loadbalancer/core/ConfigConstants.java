@@ -19,4 +19,7 @@ public class ConfigConstants {
     public static final String SYS_SERVICE_CONNECTIONS_CONNECTION_PORT = "sys-service.connections.connection.port";
     public static final String SYS_SERVICE_CONNECTIONS_PATH = "sys-service.connections.path";
     public static final String SYS_SERVICE_CONNECTIONS_PROTOCOL ="sys-service.connections.protocol" ;
+
+    //etcd
+    public static final String ETCD_CLUSTER_CONNECTIONS_URL = "etcd-cluster.connections.url";
 }

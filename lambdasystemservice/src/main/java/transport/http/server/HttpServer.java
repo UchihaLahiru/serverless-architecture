@@ -21,6 +21,7 @@ public class HttpServer {
     public static final String TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT = "transport.server.bossGroupThreadCount";
     static final int LOCAL_PORT = Launcher.getIntValue(TRANSPORT_SERVER_PORT);
     private static final Logger logger = Logger.getLogger(HttpServer.class);
+    public static final String REST_MAPPING_MAPPING_XML = "rest_mapping/mapping.xml";
     // Configure the bootstrap.
     static EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getIntValue(TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
     static EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -72,7 +73,7 @@ public class HttpServer {
 
     private MessageObserver setUpMessageObserver() {
         MessageObserver messageObserver = new MessageObserverImpl();
-        ApplicationContext applicationContext = new ClassPathXmlApplicationContext("rest_mapping/mapping.xml");
+        ApplicationContext applicationContext = new ClassPathXmlApplicationContext(REST_MAPPING_MAPPING_XML);
 
         String[] restSubscribers = applicationContext.getBeanNamesForType(transport.http.server.impl.HttpMSGSubscriber.class);
 

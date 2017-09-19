@@ -15,6 +15,7 @@ import com.coreos.jetcd.options.GetOption;
 import com.coreos.jetcd.options.PutOption;
 import com.coreos.jetcd.watch.WatchEvent;
 import com.coreos.jetcd.watch.WatchResponse;
+import lambda.netty.loadbalancer.core.ConfigConstants;
 import lambda.netty.loadbalancer.core.launch.Launcher;
 import org.apache.log4j.Logger;
 
@@ -24,7 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 public class EtcdUtil {
     final static Logger logger = Logger.getLogger(EtcdUtil.class);
-    public static String ETCD_CLUSTER = Launcher.getStringValue("etcd-cluster.connections.url");
+    public static String ETCD_CLUSTER = Launcher.getStringValue(ConfigConstants.ETCD_CLUSTER_CONNECTIONS_URL);
     private static KV kvClient = null;
     private static Client client = null;
     private static GetOption getOption = GetOption.newBuilder().withSerializable(true).build();

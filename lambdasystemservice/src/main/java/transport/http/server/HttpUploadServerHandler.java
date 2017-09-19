@@ -54,7 +54,6 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                 HttpRequest request = this.request = (HttpRequest) msg;
 
                 URI uri = new URI(request.uri());
-                logger.info(uri.getPath());
                 if (!(uri.getPath().startsWith("/file") && HttpPostRequestDecoder.isMultipart(request))) {
                     notAFileUpload(ctx, msg);
                     return;
