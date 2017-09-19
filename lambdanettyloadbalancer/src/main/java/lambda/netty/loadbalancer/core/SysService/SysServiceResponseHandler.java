@@ -21,9 +21,12 @@ public class SysServiceResponseHandler extends SimpleChannelInboundHandler<HttpO
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
         if (msg instanceof FullHttpResponse) {
+
             logger.info("Sys response has received triggering the proxyEvent ");
             FullHttpResponse fullHttpResponse = (FullHttpResponse) msg;
-            ProxyEvent proxyEvent = new ProxyEvent(fullHttpResponse.content().toString(StandardCharsets.UTF_8));
+            String remoteIP=fullHttpResponse.headers().get("remoteIP");
+            logger.info("Remote IP: "+remoteIP);
+            ProxyEvent proxyEvent = new ProxyEvent(remoteIP);
             mainCtx.fireUserEventTriggered(proxyEvent);
         }
         ctx.close();

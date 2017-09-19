@@ -71,18 +71,22 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
             ProxyEvent proxyEvent = (ProxyEvent) evt;
             ChannelFuture f = b.connect(proxyEvent.getDomain(), proxyEvent.getPort());
 
-            f.addListener(new CustomListener());
+            f.addListener(new CustomListener(proxyEvent.getDomain()+":"+proxyEvent.getPort()));
         } else {
             System.out.println(evt);
         }
     }
 
     private final class CustomListener implements ChannelFutureListener {
+        private String backendServer;
 
+        CustomListener(String backendServer){
+            this.backendServer = backendServer;
+        }
         @Override
         public void operationComplete(ChannelFuture channelFuture) throws Exception {
             if (channelFuture.isSuccess()) {
-                logger.info("Connected to the proxy server");
+                logger.info("Connected to the backend server: "+backendServer );
                 outboundChannel = channelFuture.channel();
                 outboundChannel.writeAndFlush(requestToProxyServer);
             }

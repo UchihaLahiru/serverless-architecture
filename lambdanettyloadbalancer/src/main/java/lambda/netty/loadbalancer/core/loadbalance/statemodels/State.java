@@ -17,6 +17,10 @@ package lambda.netty.loadbalancer.core.loadbalance.statemodels;
 import java.util.Queue;
 
 public interface State {
+    /**
+     *
+     * @param host host:port     ex: "127.0.0.1:8508"
+     */
     void pushHost(String host);
 
     InstanceStates getState();
@@ -24,4 +28,7 @@ public interface State {
     void setState(InstanceStates state);
 
     Queue<String> getHosts();
+    public String getDomain() ;
+
+    public void setDomain(String domain);
 }

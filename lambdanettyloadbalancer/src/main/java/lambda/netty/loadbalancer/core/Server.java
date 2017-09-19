@@ -11,21 +11,29 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lambda.netty.loadbalancer.core.launch.Launcher;
 import lambda.netty.loadbalancer.core.sslconfigs.SSLHandlerProvider;
+import org.apache.log4j.Logger;
 
 public class Server {
-    public static final String TRANSPORT_SERVER_PORT = "transport.server.port";
-    public static final String TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT = "transport.server.bossGroupThreadCount";
+    private static final Logger logger = Logger.getLogger(Server.class);
 
-    static final int LOCAL_PORT = Launcher.getIntValue(TRANSPORT_SERVER_PORT);
+    static final int LOCAL_PORT = Launcher.getIntValue(ConfigConstants.TRANSPORT_SERVER_PORT);
+
+    public static final boolean ENABLE_SSL = Launcher.getBooleanValue(ConfigConstants.TRANSPORT_SSL_CONFIG_ENABLED);
 
     public static void init() {
         // Configure the bootstrap.
-        EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getIntValue(TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
+        EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getIntValue(ConfigConstants.TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         EventLoopGroup remoteHostEventLoopGroup = new NioEventLoopGroup();
 
-        //Load SSL certs
-        SSLHandlerProvider.initSSLContext();
+
+        if(ENABLE_SSL){
+            //Load SSL certs
+            SSLHandlerProvider.initSSLContext();
+        }else {
+            logger.info("SSL is not enabled !");
+        }
+
         try {
 
             ServerBootstrap b = new ServerBootstrap();

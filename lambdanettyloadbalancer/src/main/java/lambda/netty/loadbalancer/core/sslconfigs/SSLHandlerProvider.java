@@ -1,6 +1,7 @@
 package lambda.netty.loadbalancer.core.sslconfigs;
 
 import io.netty.handler.ssl.SslHandler;
+import lambda.netty.loadbalancer.core.ConfigConstants;
 import lambda.netty.loadbalancer.core.launch.Launcher;
 import org.apache.log4j.Logger;
 
@@ -16,13 +17,13 @@ import java.security.cert.CertificateException;
 public class SSLHandlerProvider {
     private static final Logger logger = Logger.getLogger(SSLHandlerProvider.class);
 
-    private static final String PROTOCOL = Launcher.getStringValue("transport.ssl-config.protocol");
     private static final String ALGORITHM_SUN_X509 = "SunX509";
-    private static final String ALGORITHM = "ssl.KeyManagerFactory.algorithm";
-    private static final String KEYSTORE = Launcher.getStringValue("transport.ssl-config.keystore.file");
-    private static final String KEYSTORE_TYPE = Launcher.getStringValue("transport.ssl-config.keystore.type");
-    private static final String KEYSTORE_PASSWORD = Launcher.getStringValue("transport.ssl-config.keystore.password");
-    private static final String CERT_PASSWORD = Launcher.getStringValue("transport.ssl-config.cert.password");
+    private static final String ALGORITHM =  "ssl.KeyManagerFactory.algorithm";;
+    private static final String PROTOCOL = Launcher.getStringValue(ConfigConstants.TRANSPORT_SSL_CONFIG_PROTOCOL);
+    private static final String KEYSTORE = Launcher.getStringValue(ConfigConstants.TRANSPORT_SSL_CONFIG_KEYSTORE_FILE);
+    private static final String KEYSTORE_TYPE = Launcher.getStringValue(ConfigConstants.TRANSPORT_SSL_CONFIG_KEYSTORE_TYPE);
+    private static final String KEYSTORE_PASSWORD = Launcher.getStringValue(ConfigConstants.TRANSPORT_SSL_CONFIG_KEYSTORE_PASSWORD);
+    private static final String CERT_PASSWORD = Launcher.getStringValue(ConfigConstants.TRANSPORT_SSL_CONFIG_CERT_PASSWORD);
     private static SSLContext serverSSLContext = null;
 
 
