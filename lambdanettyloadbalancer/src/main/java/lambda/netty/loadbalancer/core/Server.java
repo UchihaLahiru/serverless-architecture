@@ -13,14 +13,18 @@ import lambda.netty.loadbalancer.core.launch.Launcher;
 import lambda.netty.loadbalancer.core.sslconfigs.SSLHandlerProvider;
 import org.apache.log4j.Logger;
 
-public class Server {
+public class Server implements Runnable {
     private static final Logger logger = Logger.getLogger(Server.class);
 
     static final int LOCAL_PORT = Launcher.getIntValue(ConfigConstants.TRANSPORT_SERVER_PORT);
 
-    public static final boolean ENABLE_SSL = Launcher.getBooleanValue(ConfigConstants.TRANSPORT_SSL_CONFIG_ENABLED);
+    public static final boolean ENABLE_SSL = Launcher.getBoolean(ConfigConstants.TRANSPORT_SSL_CONFIG_ENABLED);
 
-    public static void init() {
+
+
+    @Override
+    public void run() {
+        logger.info("Starting Http Transport Service !");
         // Configure the bootstrap.
         EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getIntValue(ConfigConstants.TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -51,7 +55,5 @@ public class Server {
             workerGroup.shutdownGracefully();
             remoteHostEventLoopGroup.shutdownGracefully();
         }
-
     }
-
 }

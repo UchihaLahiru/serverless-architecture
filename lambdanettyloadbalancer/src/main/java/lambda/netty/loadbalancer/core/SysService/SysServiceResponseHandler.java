@@ -24,9 +24,14 @@ public class SysServiceResponseHandler extends SimpleChannelInboundHandler<HttpO
 
             logger.info("Sys response has received triggering the proxyEvent ");
             FullHttpResponse fullHttpResponse = (FullHttpResponse) msg;
+
             String remoteIP=fullHttpResponse.headers().get("remoteIP");
-            logger.info("Remote IP: "+remoteIP);
+            String domain=fullHttpResponse.headers().get("domain");
+            logger.info("Domain: "+domain+" Remote IP: "+remoteIP);
+
             ProxyEvent proxyEvent = new ProxyEvent(remoteIP);
+            proxyEvent.setDomain(domain);
+
             mainCtx.fireUserEventTriggered(proxyEvent);
         }
         ctx.close();

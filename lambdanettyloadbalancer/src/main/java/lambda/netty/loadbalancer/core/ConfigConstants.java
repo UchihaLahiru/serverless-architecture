@@ -22,4 +22,14 @@ public class ConfigConstants {
 
     //etcd
     public static final String ETCD_CLUSTER_CONNECTIONS_URL = "etcd-cluster.connections.url";
+
+
+    //scalability
+    public static final String SCALABILITY_THRESHOLD = "scalability.response-time-threshold";
+    public static final String SCALABILITY_MAP_SIZE = "scalability.map-size";
+    public static final String SCALABILITY_BLOCKING_QUEUE_SIZE = "scalability.blocking_queue_size";
+    public static final String SCALABILITY_THREAD_COUNT = "scalability.thread-count";
+    public static final String SCALABILITY_QUERY_TIME = "scalability.query_time";
+    public static final String LAUNCHER_THREADS = "launcher.threads";
+    public static final String CONFIG_SCALABILITY_ENABLED = "scalability.enabled";
 }

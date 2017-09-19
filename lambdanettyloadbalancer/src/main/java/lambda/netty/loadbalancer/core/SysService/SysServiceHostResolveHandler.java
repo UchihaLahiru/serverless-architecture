@@ -20,18 +20,17 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Future;
 
 public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     final static Logger logger = Logger.getLogger(SysServiceHostResolveHandler.class);
     private final static String HOST = "Host";
-    private static final String SYS_HOST = Launcher.getStringValues(ConfigConstants.SYS_SERVICE_CONNECTIONS_CONNECTION_HOST).get(0);
-    private static final int SYS_PORT = Launcher.getIntValues(ConfigConstants.SYS_SERVICE_CONNECTIONS_CONNECTION_PORT).get(0);
-    private static final String SYS_PATH=Launcher.getStringValue(ConfigConstants.SYS_SERVICE_CONNECTIONS_PATH);
-    private static final String SYS_PROTOCOL = Launcher.getStringValue(ConfigConstants.SYS_SERVICE_CONNECTIONS_PROTOCOL);
+    private static final String SYS_HOST = Launcher.getStringList(ConfigConstants.SYS_SERVICE_CONNECTIONS_CONNECTION_HOST).get(0);
+    private static final int SYS_PORT = Launcher.getIntList(ConfigConstants.SYS_SERVICE_CONNECTIONS_CONNECTION_PORT).get(0);
+    private static final String SYS_PATH=Launcher.getString(ConfigConstants.SYS_SERVICE_CONNECTIONS_PATH);
+    private static final String SYS_PROTOCOL = Launcher.getString(ConfigConstants.SYS_SERVICE_CONNECTIONS_PROTOCOL);
     Channel remoteHostChannel = null;
     EventLoopGroup remoteHostEventLoopGroup;
-
+    String instanceID;
     public SysServiceHostResolveHandler(EventLoopGroup remoteHostEventLoopGroup) {
         this.remoteHostEventLoopGroup = remoteHostEventLoopGroup;
     }
@@ -59,7 +58,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest request = (FullHttpRequest) msg;
-            String instanceID= request.headers().get("domain");
+             instanceID= request.headers().get("domain");
 
             EtcdUtil.getValue(instanceID).thenAccept(x -> {
 
@@ -79,6 +78,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
                     }
                     // redirect the request
                     ProxyEvent proxyEvent = new ProxyEvent(remoteIp);
+                    proxyEvent.setDomain(instanceID);
                     ctx.fireUserEventTriggered(proxyEvent);
                 }
             });
@@ -89,12 +89,13 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         ctx.fireChannelRead(msg);
     }
 
-    private void requestIp() {
+    private void requestIp( ) {
         // Prepare the HTTP request.
         HttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, getURI());
         request.headers().set(HttpHeaderNames.HOST, SYS_HOST);
         request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        request.headers().set("domain",instanceID);
 
         // Send the HTTP request.
         remoteHostChannel.writeAndFlush(request);

@@ -4,11 +4,13 @@ package lambda.netty.loadbalancer.core.proxy;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
+import io.netty.util.AttributeKey;
+import lambda.netty.loadbalancer.core.launch.Launcher;
 import org.apache.log4j.Logger;
 
 public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     final static Logger logger = Logger.getLogger(ProxyFrontendHandler.class);
-
+    public static final AttributeKey DOMAIN =AttributeKey.newInstance("domain");
     Bootstrap b;
     Object requestToProxyServer;
     // As we use inboundChannel.eventLoop() when building the Bootstrap this does not need to be volatile as
@@ -37,9 +39,15 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) {
         final Channel channel = ctx.channel();
         b = new Bootstrap();
-        b.group(ctx.channel().eventLoop())
-                .channel(ctx.channel().getClass())
-                .handler(new ProxyBackendHandlersInit(channel));
+        b=  b.group(ctx.channel().eventLoop())
+                .channel(ctx.channel().getClass());
+        if(Launcher.SCALABILITY_ENABLED){
+            b.handler(new ProxyBackendHandlersInit(channel, System.currentTimeMillis()));
+        }else{
+            b.handler(new ProxyBackendHandlersInit(channel));
+        }
+
+
 
 
     }
@@ -69,9 +77,9 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof ProxyEvent) {
             logger.info("Received the event");
             ProxyEvent proxyEvent = (ProxyEvent) evt;
-            ChannelFuture f = b.connect(proxyEvent.getDomain(), proxyEvent.getPort());
-
-            f.addListener(new CustomListener(proxyEvent.getDomain()+":"+proxyEvent.getPort()));
+            ChannelFuture f = b.connect(proxyEvent.getHost(), proxyEvent.getPort());
+            f.channel().attr(DOMAIN).set(proxyEvent.getDomain());
+            f.addListener(new CustomListener(proxyEvent.getHost()+":"+proxyEvent.getPort()));
         } else {
             System.out.println(evt);
         }
