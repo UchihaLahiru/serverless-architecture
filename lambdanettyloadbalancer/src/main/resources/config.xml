@@ -54,7 +54,7 @@
         <blocking_queue_size>500</blocking_queue_size>
         <response-time-threshold>20</response-time-threshold>
         <thread-count>2</thread-count>
-        <query_time>200</query_time>
+        <query_time>500</query_time>
     </scalability>
 
 

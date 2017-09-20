@@ -26,11 +26,12 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     private final static String HOST = "Host";
     private static final String SYS_HOST = Launcher.getStringList(ConfigConstants.SYS_SERVICE_CONNECTIONS_CONNECTION_HOST).get(0);
     private static final int SYS_PORT = Launcher.getIntList(ConfigConstants.SYS_SERVICE_CONNECTIONS_CONNECTION_PORT).get(0);
-    private static final String SYS_PATH=Launcher.getString(ConfigConstants.SYS_SERVICE_CONNECTIONS_PATH);
+    private static final String SYS_PATH = Launcher.getString(ConfigConstants.SYS_SERVICE_CONNECTIONS_PATH);
     private static final String SYS_PROTOCOL = Launcher.getString(ConfigConstants.SYS_SERVICE_CONNECTIONS_PROTOCOL);
     Channel remoteHostChannel = null;
     EventLoopGroup remoteHostEventLoopGroup;
     String instanceID;
+
     public SysServiceHostResolveHandler(EventLoopGroup remoteHostEventLoopGroup) {
         this.remoteHostEventLoopGroup = remoteHostEventLoopGroup;
     }
@@ -58,7 +59,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest request = (FullHttpRequest) msg;
-             instanceID= request.headers().get("domain");
+            instanceID = request.headers().get("domain");
 
             EtcdUtil.getValue(instanceID).thenAccept(x -> {
 
@@ -70,7 +71,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
                     requestIp();
                 } else if (stateImpl.getState() == InstanceStates.RUNNING) {
                     logger.info("These instances are up and running");
-                   String remoteIp= LoadBalanceUtil.getRemoteHost(stateImpl);
+                    String remoteIp = LoadBalanceUtil.getRemoteHost(stateImpl);
                     try {
                         EtcdUtil.putValue("localhost", StateImplJsonHelp.toString(stateImpl));
                     } catch (EtcdClientException e) {
@@ -89,13 +90,13 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         ctx.fireChannelRead(msg);
     }
 
-    private void requestIp( ) {
+    private void requestIp() {
         // Prepare the HTTP request.
         HttpRequest request = new DefaultFullHttpRequest(
                 HttpVersion.HTTP_1_1, HttpMethod.GET, getURI());
         request.headers().set(HttpHeaderNames.HOST, SYS_HOST);
         request.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
-        request.headers().set("domain",instanceID);
+        request.headers().set("domain", instanceID);
 
         // Send the HTTP request.
         remoteHostChannel.writeAndFlush(request);
@@ -107,12 +108,13 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         }
         logger.info("Request sent to the System Service");
     }
-    private String getURI(){
 
-        String url=null;
+    private String getURI() {
+
+        String url = null;
         try {
-            URI uri=new URI(SYS_PROTOCOL,null,SYS_HOST,SYS_PORT,SYS_PATH,null,null);
-           url=uri.toURL().toString();
+            URI uri = new URI(SYS_PROTOCOL, null, SYS_HOST, SYS_PORT, SYS_PATH, null, null);
+            url = uri.toURL().toString();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
@@ -120,6 +122,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         }
         return url;
     }
+
     private final class CustomListener implements ChannelFutureListener {
         private Channel mainChannel;
 
@@ -130,7 +133,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         @Override
         public void operationComplete(ChannelFuture channelFuture) throws Exception {
             if (channelFuture.isSuccess()) {
-                logger.info("connected to the System service: " +SYS_HOST+":"+SYS_PORT+SYS_PATH);
+                logger.info("connected to the System service: " + SYS_HOST + ":" + SYS_PORT + SYS_PATH);
                 remoteHostChannel = channelFuture.channel();
                 //Reading the main channel after Sys service is connected
                 mainChannel.read();

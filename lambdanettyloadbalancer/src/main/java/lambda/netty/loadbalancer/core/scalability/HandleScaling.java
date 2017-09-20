@@ -7,9 +7,10 @@ public class HandleScaling implements Runnable {
 
     private String domain;
 
-    HandleScaling(String domain){
+    HandleScaling(String domain) {
         this.domain = domain;
     }
+
     @Override
     public void run() {
         logger.info("scaled");

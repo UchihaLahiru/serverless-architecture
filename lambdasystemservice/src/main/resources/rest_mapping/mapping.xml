@@ -25,7 +25,7 @@
         <property name="path" value="/state"></property>
     </bean>
     <!-- Bind the logic to a Subscriber-->
-    <bean id="HttpMSGSubscriber_rest2" class="transport.http.server.impl.HttpMSGSubscriber">
+    <bean id="HttpMSGSubscriber_instanceManager" class="transport.http.server.impl.HttpMSGSubscriber">
         <property name="action">
             <ref bean="instanceManager"></ref>
         </property>

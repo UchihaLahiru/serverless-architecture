@@ -21,7 +21,6 @@ public class Server implements Runnable {
     public static final boolean ENABLE_SSL = Launcher.getBoolean(ConfigConstants.TRANSPORT_SSL_CONFIG_ENABLED);
 
 
-
     @Override
     public void run() {
         logger.info("Starting Http Transport Service !");
@@ -31,10 +30,10 @@ public class Server implements Runnable {
         EventLoopGroup remoteHostEventLoopGroup = new NioEventLoopGroup();
 
 
-        if(ENABLE_SSL){
+        if (ENABLE_SSL) {
             //Load SSL certs
             SSLHandlerProvider.initSSLContext();
-        }else {
+        } else {
             logger.info("SSL is not enabled !");
         }
 

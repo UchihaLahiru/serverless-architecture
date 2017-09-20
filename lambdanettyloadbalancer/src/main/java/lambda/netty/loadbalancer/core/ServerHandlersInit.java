@@ -28,7 +28,7 @@ public class ServerHandlersInit extends ChannelInitializer<SocketChannel> {
         ChannelPipeline channelPipeline = socketChannel.pipeline();
 
 
-        if(Server.ENABLE_SSL){
+        if (Server.ENABLE_SSL) {
             SslHandler sslHandler = SSLHandlerProvider.getSSLHandler();
             channelPipeline.addFirst(sslHandler);
         }

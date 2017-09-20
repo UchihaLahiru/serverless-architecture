@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 public class Launcher {
     private static final Logger logger = Logger.getLogger(Launcher.class);
     private final static String CONFIG_PROPERTIES_FILE = "config.xml";
+
     static {
         Configurations configs = new Configurations();
         try {
@@ -27,11 +28,10 @@ public class Launcher {
 
 
     // start implementing after the static block. it's loading the configuration
-    private  static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.LAUNCHER_THREADS));
-    public final static boolean SCALABILITY_ENABLED=Launcher.getBoolean(ConfigConstants.CONFIG_SCALABILITY_ENABLED);
+    private static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.LAUNCHER_THREADS));
+    public final static boolean SCALABILITY_ENABLED = Launcher.getBoolean(ConfigConstants.CONFIG_SCALABILITY_ENABLED);
 
     private static XMLConfiguration xmlConfiguration;
-
 
 
     public static String getString(String tag) {
@@ -57,22 +57,24 @@ public class Launcher {
         if (obj instanceof List) {
             List tmp = (List) obj;
             List<Integer> tmp_return = new ArrayList<>(tmp.size());
-            tmp.forEach(x->tmp_return.add(Integer.parseInt((String) x)));
+            tmp.forEach(x -> tmp_return.add(Integer.parseInt((String) x)));
 
             return tmp_return;
         }
         return null;
     }
 
-    public static boolean getBoolean(String key){
+    public static boolean getBoolean(String key) {
         String val = getString(key);
 
-        return val.equals("true")? true:false;
+        return val.equals("true") ? true : false;
     }
+
     public static long getLong(String s) {
 
         return xmlConfiguration.getLong(s);
     }
+
     public static void main(String[] args) throws InterruptedException {
 
 //        State  state = new StateImpl();
@@ -91,9 +93,9 @@ public class Launcher {
 //        } catch (ExecutionException e) {
 //            e.printStackTrace();
 //        }
-        if(SCALABILITY_ENABLED){
+        if (SCALABILITY_ENABLED) {
             service.submit(new ScalabilityManager());
-        }else {
+        } else {
             logger.info("Scalability is not enabled !");
         }
         service.submit(new Server());

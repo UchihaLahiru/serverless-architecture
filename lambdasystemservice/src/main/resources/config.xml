@@ -8,8 +8,18 @@
             <host>localhost</host>
             <port>8084</port>
             <bossGroupThreadCount>1</bossGroupThreadCount>
+            <tmp_file_location>file_storage_tmp/</tmp_file_location>
         </server>
     </transport>
+
+    <obj-storage>
+        <connection>
+            <url>http://127.0.0.1:9000</url>
+            <accesskey>D17BFT97ATJREDLTY07P</accesskey>
+            <secretkey>RNXpGg7qsY5YxkGPzWtOEkkg52ePYkdbYCs5rMTU</secretkey>
+        </connection>
+    </obj-storage>
+
 
     <connections>
         <openstack>

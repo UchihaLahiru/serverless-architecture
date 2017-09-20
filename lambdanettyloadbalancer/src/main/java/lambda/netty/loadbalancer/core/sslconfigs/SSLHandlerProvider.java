@@ -18,7 +18,8 @@ public class SSLHandlerProvider {
     private static final Logger logger = Logger.getLogger(SSLHandlerProvider.class);
 
     private static final String ALGORITHM_SUN_X509 = "SunX509";
-    private static final String ALGORITHM =  "ssl.KeyManagerFactory.algorithm";;
+    private static final String ALGORITHM = "ssl.KeyManagerFactory.algorithm";
+    ;
     private static final String PROTOCOL = Launcher.getString(ConfigConstants.TRANSPORT_SSL_CONFIG_PROTOCOL);
     private static final String KEYSTORE = Launcher.getString(ConfigConstants.TRANSPORT_SSL_CONFIG_KEYSTORE_FILE);
     private static final String KEYSTORE_TYPE = Launcher.getString(ConfigConstants.TRANSPORT_SSL_CONFIG_KEYSTORE_TYPE);

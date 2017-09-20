@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     final static Logger logger = Logger.getLogger(ProxyFrontendHandler.class);
-    public static final AttributeKey DOMAIN =AttributeKey.newInstance("domain");
+    public static final AttributeKey DOMAIN = AttributeKey.newInstance("domain");
     Bootstrap b;
     Object requestToProxyServer;
     // As we use inboundChannel.eventLoop() when building the Bootstrap this does not need to be volatile as
@@ -39,15 +39,13 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) {
         final Channel channel = ctx.channel();
         b = new Bootstrap();
-        b=  b.group(ctx.channel().eventLoop())
+        b = b.group(ctx.channel().eventLoop())
                 .channel(ctx.channel().getClass());
-        if(Launcher.SCALABILITY_ENABLED){
+        if (Launcher.SCALABILITY_ENABLED) {
             b.handler(new ProxyBackendHandlersInit(channel, System.currentTimeMillis()));
-        }else{
+        } else {
             b.handler(new ProxyBackendHandlersInit(channel));
         }
-
-
 
 
     }
@@ -79,7 +77,7 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
             ProxyEvent proxyEvent = (ProxyEvent) evt;
             ChannelFuture f = b.connect(proxyEvent.getHost(), proxyEvent.getPort());
             f.channel().attr(DOMAIN).set(proxyEvent.getDomain());
-            f.addListener(new CustomListener(proxyEvent.getHost()+":"+proxyEvent.getPort()));
+            f.addListener(new CustomListener(proxyEvent.getHost() + ":" + proxyEvent.getPort()));
         } else {
             System.out.println(evt);
         }
@@ -88,13 +86,14 @@ public class ProxyFrontendHandler extends ChannelInboundHandlerAdapter {
     private final class CustomListener implements ChannelFutureListener {
         private String backendServer;
 
-        CustomListener(String backendServer){
+        CustomListener(String backendServer) {
             this.backendServer = backendServer;
         }
+
         @Override
         public void operationComplete(ChannelFuture channelFuture) throws Exception {
             if (channelFuture.isSuccess()) {
-                logger.info("Connected to the backend server: "+backendServer );
+                logger.info("Connected to the backend server: " + backendServer);
                 outboundChannel = channelFuture.channel();
                 outboundChannel.writeAndFlush(requestToProxyServer);
             }

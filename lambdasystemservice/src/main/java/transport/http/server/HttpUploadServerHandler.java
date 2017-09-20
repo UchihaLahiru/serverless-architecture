@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.EndOfDataDec
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.ErrorDataDecoderException;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType;
 import io.netty.util.CharsetUtil;
+import launch.Launcher;
 import org.apache.log4j.Logger;
 
 import java.io.FileOutputStream;
@@ -188,7 +189,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                     ByteBuf byteBuf = fileUpload.content();
                     FileOutputStream fileOutputStream = null;
                     try {
-                        fileOutputStream = new FileOutputStream(fileUpload.getFilename());
+                        fileOutputStream = new FileOutputStream(Launcher.TMP_FILE_LOCATION+fileUpload.getFilename());
                         while (byteBuf.isReadable()) {
                             fileOutputStream.write(byteBuf.readByte());
                         }

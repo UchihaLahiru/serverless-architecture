@@ -23,6 +23,7 @@ public class StateImpl implements State {
     private Queue<String> hosts = new LinkedList<>();
     private InstanceStates state;
     private String domain;
+
     public StateImpl() {
     }
 

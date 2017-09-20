@@ -26,8 +26,8 @@ public class Launcher {
         }
     }
 
-    public static final String LAUNCHER_THREADS = "launcher.threads";
-    private static final ExecutorService service = Executors.newFixedThreadPool(getIntValue(LAUNCHER_THREADS));
+    public static final String TMP_FILE_LOCATION=Launcher.getStringValue(ConfigConstantKeys.TRANSPORT_TMP_FILE_LOCATION);
+    private static final ExecutorService service = Executors.newFixedThreadPool(getIntValue(ConfigConstantKeys.LAUNCHER_THREADS));
 
     public static String getStringValue(String tag) {
         return xmlConfiguration.getString(tag);

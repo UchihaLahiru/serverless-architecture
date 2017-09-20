@@ -2,7 +2,6 @@ package lambda.netty.loadbalancer.core.proxy;
 
 
 import io.netty.channel.*;
-import io.netty.util.AttributeKey;
 import lambda.netty.loadbalancer.core.launch.Launcher;
 import lambda.netty.loadbalancer.core.scalability.ScaleInfoDAO;
 import org.apache.log4j.Logger;
@@ -16,19 +15,20 @@ public class ProxyBackendHandler extends ChannelInboundHandlerAdapter {
     private final Channel inboundChannel;
 
     private long time;
+
     public ProxyBackendHandler(Channel inboundChannel) {
         this.inboundChannel = inboundChannel;
     }
 
     public ProxyBackendHandler(Channel channel, long time) {
-        this.inboundChannel=channel;
-        this.time=time;
+        this.inboundChannel = channel;
+        this.time = time;
     }
 
     @Override
 
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        inboundChannel.writeAndFlush(msg).addListener(new CustomListener((String)ctx.channel().attr(DOMAIN).get()));
+        inboundChannel.writeAndFlush(msg).addListener(new CustomListener((String) ctx.channel().attr(DOMAIN).get()));
     }
 
     @Override
@@ -55,10 +55,9 @@ public class ProxyBackendHandler extends ChannelInboundHandlerAdapter {
         public void operationComplete(ChannelFuture channelFuture) throws Exception {
             if (channelFuture.isSuccess()) {
                 logger.info("Message redirected to the Client");
-                if(Launcher.SCALABILITY_ENABLED){
+                if (Launcher.SCALABILITY_ENABLED) {
                     logger.info("Putting response time !");
-                    System.out.println(time);
-                    ScaleInfoDAO.putTime(domain,System.currentTimeMillis()-time);
+                    ScaleInfoDAO.putTime(domain, System.currentTimeMillis() - time);
                 }
                 inboundChannel.close();
                 channelFuture.channel().close();
