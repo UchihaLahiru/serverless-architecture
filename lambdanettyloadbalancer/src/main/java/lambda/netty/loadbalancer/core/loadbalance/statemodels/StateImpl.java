@@ -22,7 +22,7 @@ public class StateImpl implements State {
 
     private Queue<String> hosts = new LinkedList<>();
     private InstanceStates state;
-
+    private String domain;
     public StateImpl() {
     }
 
@@ -45,5 +45,13 @@ public class StateImpl implements State {
 
     public String pullHost() {
         return hosts.poll();
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

@@ -4,6 +4,7 @@ package connections;
  * Created by deshan on 7/19/17.
  */
 
+import launch.Launcher;
 import org.openstack4j.api.OSClient.OSClientV2;
 import org.openstack4j.openstack.OSFactory;
 
@@ -28,7 +29,7 @@ public class OpenstackAdminConnection {
 
     public static OpenstackAdminConnection getOpenstackAdminConnection() {
         if (openstackAdminConnection == null)
-            openstackAdminConnection = new OpenstackAdminConnection("http://10.40.19.191:5000/v2.0", "1qaz2wsx@");
+            openstackAdminConnection = new OpenstackAdminConnection(Launcher.getStringValue("connections.openstack.adminConnection"), Launcher.getStringValue("connections.openstack.password"));
         ;
         return openstackAdminConnection;
     }

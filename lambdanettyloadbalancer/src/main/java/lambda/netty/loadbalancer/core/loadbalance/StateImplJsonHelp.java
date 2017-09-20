@@ -26,7 +26,7 @@ public class StateImplJsonHelp extends JsonHelper<StateImpl> {
     }
 
     public static State getObject(String str) {
-        return stateImplJsonHelp.jsonToObject(str);
+        return stateImplJsonHelp.jsonToObj(str);
     }
 
     public static String toString(State stateImpl) {

@@ -5,6 +5,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
+import org.apache.log4j.Logger;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class HttpServerMessageProcessor {
+    private static final Logger logger = Logger.getLogger(HttpServerMessageProcessor.class);
 
     public static final String HOST = "HOST";
     private static HttpServerMessageProcessor httpServerMessageProcessor = new HttpServerMessageProcessor();
@@ -35,16 +37,20 @@ public class HttpServerMessageProcessor {
             FullHttpRequest fullHttpRequest = (FullHttpRequest) object;
             URI uri = null;
             try {
-                uri = new URI("http://" + fullHttpRequest.headers().get(HOST) + fullHttpRequest.uri());
+//                uri = new URI("http://" + fullHttpRequest.headers().get(HOST) + fullHttpRequest.uri());
+                uri =new URI(fullHttpRequest.uri());
+                logger.info(uri);
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
             FullHttpResponse response = null;
             if (messageObserver == null) {
                 String error_msg = "Message observer is not initialized";
+                logger.info(error_msg);
                 response = getErrorHttpResponse(error_msg);
             } else if (!messageObserver.isValid(uri.getPath())) {
                 String error_msg = "URL is not registered";
+                logger.info(error_msg);
                 response = getErrorHttpResponse(error_msg);
             } else {
 

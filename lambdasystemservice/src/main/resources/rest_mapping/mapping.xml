@@ -1,0 +1,34 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <!--#################################REST LOGIC REGISTRATION##############################################################-->
+    <!-- Define the logic -->
+    <bean id="restAction" class="transport.http.server.impl.SampleRest">
+        <property name="path" value="/rest"></property>
+    </bean>
+    <!-- Bind the logic to a Subscriber-->
+    <bean id="HttpMSGSubscriber_rest" class="transport.http.server.impl.HttpMSGSubscriber">
+        <property name="action">
+            <ref bean="restAction"></ref>
+        </property>
+    </bean>
+    <!--###############################################################################################-->
+
+
+    <!--#################################REST LOGIC REGISTRATION##############################################################-->
+    <!-- Define the logic -->
+    <bean id="instanceManager" class="api.InstanceStateManager">
+        <property name="path" value="/state"></property>
+    </bean>
+    <!-- Bind the logic to a Subscriber-->
+    <bean id="HttpMSGSubscriber_rest2" class="transport.http.server.impl.HttpMSGSubscriber">
+        <property name="action">
+            <ref bean="instanceManager"></ref>
+        </property>
+    </bean>
+    <!--###############################################################################################-->
+</beans>

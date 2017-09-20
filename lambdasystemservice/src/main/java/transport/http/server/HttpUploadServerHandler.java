@@ -17,7 +17,7 @@ import java.net.URI;
 
 public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObject> {
 
-    private static final Logger logger = Logger.getLogger(HttpUploadServerHandler.class.getName());
+    private static final Logger logger = Logger.getLogger(HttpUploadServerHandler.class);
     private static final HttpDataFactory factory =
             new DefaultHttpDataFactory(DefaultHttpDataFactory.MINSIZE); // Disk if size exceed
 
@@ -54,7 +54,6 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                 HttpRequest request = this.request = (HttpRequest) msg;
 
                 URI uri = new URI(request.uri());
-                logger.info(uri.getPath());
                 if (!(uri.getPath().startsWith("/file") && HttpPostRequestDecoder.isMultipart(request))) {
                     notAFileUpload(ctx, msg);
                     return;

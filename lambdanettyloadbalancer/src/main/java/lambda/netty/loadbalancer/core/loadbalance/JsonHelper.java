@@ -43,7 +43,7 @@ public class JsonHelper<T> {
         return tmp;
     }
 
-    public T jsonToObject(String str) {
+    public T jsonToObj(String str) {
         T tmp = null;
         try {
             tmp = objectMapper.readValue(str, t);

@@ -9,6 +9,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.ssl.SslHandler;
 import lambda.netty.loadbalancer.core.SysService.SysServiceHostResolveHandler;
+import lambda.netty.loadbalancer.core.launch.Launcher;
 import lambda.netty.loadbalancer.core.proxy.ProxyFrontendHandler;
 import lambda.netty.loadbalancer.core.sslconfigs.SSLHandlerProvider;
 
@@ -25,13 +26,18 @@ public class ServerHandlersInit extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel socketChannel) throws Exception {
 
         ChannelPipeline channelPipeline = socketChannel.pipeline();
-        SslHandler sslHandler = SSLHandlerProvider.getSSLHandler();
+
+
+        if(Server.ENABLE_SSL){
+            SslHandler sslHandler = SSLHandlerProvider.getSSLHandler();
+            channelPipeline.addFirst(sslHandler);
+        }
         channelPipeline.addLast(
-                sslHandler,
                 new HttpRequestDecoder(),
-                new HttpObjectAggregator(1048576),
+                new HttpObjectAggregator(Launcher.getIntValue(ConfigConstants.TRANSPORT_SERVER_HTTPOBJECTAGGREGATOR)),
                 new SysServiceHostResolveHandler(remoteHostEventLoopGroup),
                 new ProxyFrontendHandler());
+
 
     }
 

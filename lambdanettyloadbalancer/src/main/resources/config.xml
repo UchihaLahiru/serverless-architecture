@@ -1,0 +1,61 @@
+<configuration>
+    <launcher>
+        <threads>2</threads>
+    </launcher>
+    <transport>
+        <server>
+            <host>localhost</host>
+            <port>8080</port>
+            <bossGroupThreadCount>1</bossGroupThreadCount>
+            <httpobjectaggregator>104867</httpobjectaggregator>
+        </server>
+
+        <ssl-config>
+            <enabled>true</enabled>
+
+            <protocol>TLS</protocol>
+            <keystore>
+                <type>JKS</type>
+                <file>ssl_certs/mytestkeys.jks</file>
+                <password>123456</password>
+            </keystore>
+            <cert>
+                <password>123456</password>
+            </cert>
+        </ssl-config>
+    </transport>
+
+
+    <sys-service>
+        <httpobjectaggregator>104867</httpobjectaggregator>
+        <connections>
+            <path>/state</path>
+            <protocol>http</protocol>
+            <connection>
+                <host>127.0.0.1</host>
+                <port>8084</port>
+            </connection>
+            <connection>
+                <host>127.0.0.2</host>
+                <port>8081</port>
+            </connection>
+        </connections>
+    </sys-service>
+
+    <etcd-cluster>
+        <connections>
+            <url>http://localhost:2379</url>
+        </connections>
+    </etcd-cluster>
+
+    <scalability>
+        <enabled>true</enabled>
+        <map-size>1000</map-size>
+        <blocking_queue_size>500</blocking_queue_size>
+        <response-time-threshold>20</response-time-threshold>
+        <thread-count>2</thread-count>
+        <query_time>200</query_time>
+    </scalability>
+
+
+</configuration>

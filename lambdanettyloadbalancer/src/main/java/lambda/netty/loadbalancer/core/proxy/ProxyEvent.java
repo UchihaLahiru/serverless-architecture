@@ -5,22 +5,24 @@ import java.io.Serializable;
 public class ProxyEvent implements Serializable {
 
 
-    private String domain;
+    private String host;
     private int port;
+    private long time;
+    private String domain;
 
     public ProxyEvent(String host) {
         String[] domainConfig = host.split(":");
-        setDomain(domainConfig[0]);
+        setHost(domainConfig[0]);
         setPort(Integer.parseInt(domainConfig[1]));
     }
 
 
-    public String getDomain() {
-        return domain;
+    public String getHost() {
+        return host;
     }
 
-    private void setDomain(String domain) {
-        this.domain = domain;
+    private void setHost(String host) {
+        this.host = host;
     }
 
     public int getPort() {
@@ -31,4 +33,19 @@ public class ProxyEvent implements Serializable {
         this.port = port;
     }
 
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
 }
