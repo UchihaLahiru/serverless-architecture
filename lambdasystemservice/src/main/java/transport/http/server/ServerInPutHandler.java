@@ -27,7 +27,6 @@ public class ServerInPutHandler extends SimpleChannelInboundHandler<FullHttpRequ
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, FullHttpRequest fullHttpRequest) throws Exception {
-
         httpServerMessageProcessor.process(fullHttpRequest, channelHandlerContext);
     }
 

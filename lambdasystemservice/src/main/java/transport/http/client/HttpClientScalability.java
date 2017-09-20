@@ -13,23 +13,21 @@ public class HttpClientScalability extends SimpleHttpClientImpl {
         super(new URI("http://127.0.0.1:8082/"));
     }
 
-    public void sendGETRequest(HttpRequest httpRequest, MessageProcessor messageProcessor) {
-        sendHttpRequest(httpRequest, messageProcessor);
-    }
-
-
     public static void main(String[] args) throws URISyntaxException {
 
         HttpClientScalability httpClientScalability = new HttpClientScalability();
-        HttpRequest httpRequest=httpClientScalability.getDefaultPOSTHttpRequest("{\"s\":\"ss\"}");
+        HttpRequest httpRequest = httpClientScalability.getDefaultPOSTHttpRequest("{\"s\":\"ss\"}");
 
-        httpClientScalability.sendHttpRequest(httpRequest,new HTTPMessageProcessor((x->{
-
+        httpClientScalability.sendHttpRequest(httpRequest, new HTTPMessageProcessor((x -> {
 
 
         })));
 
 
+    }
+
+    public void sendGETRequest(HttpRequest httpRequest, MessageProcessor messageProcessor) {
+        sendHttpRequest(httpRequest, messageProcessor);
     }
 
 }

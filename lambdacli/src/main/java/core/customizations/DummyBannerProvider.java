@@ -26,7 +26,7 @@ public class DummyBannerProvider implements BannerProvider {
 
     @Override
     public String getWelcomeMessage() {
-        return "This is a CLI for dummy service";
+        return "This is a CLI for lambda service";
     }
 
     @Override

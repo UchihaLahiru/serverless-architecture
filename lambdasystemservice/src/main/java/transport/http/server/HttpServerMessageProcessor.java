@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class HttpServerMessageProcessor {
+
     public static final String HOST = "HOST";
     private static HttpServerMessageProcessor httpServerMessageProcessor = new HttpServerMessageProcessor();
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -42,10 +43,10 @@ public class HttpServerMessageProcessor {
             if (messageObserver == null) {
                 String error_msg = "Message observer is not initialized";
                 response = getErrorHttpResponse(error_msg);
-            } else if(!messageObserver.isValid(uri.getPath())){
+            } else if (!messageObserver.isValid(uri.getPath())) {
                 String error_msg = "URL is not registered";
                 response = getErrorHttpResponse(error_msg);
-            }else  {
+            } else {
 
                 response = messageObserver.notifySubscriber(uri.getPath(), fullHttpRequest);
             }

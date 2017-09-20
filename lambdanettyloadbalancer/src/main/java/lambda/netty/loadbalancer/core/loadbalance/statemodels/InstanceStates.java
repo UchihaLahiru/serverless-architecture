@@ -18,8 +18,8 @@ public enum InstanceStates {
 
 
     DOWN("DOWN", 00), RUNNING("RUNNING", 01),STARTING("STARTING",03);
-    String state;
-    int code;
+    private String state;
+    private int code;
 
     InstanceStates(String state, int code) {
         this.state = state;

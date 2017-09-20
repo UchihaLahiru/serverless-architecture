@@ -3,8 +3,6 @@ jdk: oraclejdk8
 script: 
 - mvn test -B
 - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-before_install:
-- wget https://github.com/ThilinaManamgoda/jetcd/archive/master.zip
-- unzip master.zip -d .
-- pushd jetcd-master && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V && popd
--   
+- mvn cobertura:cobertura
+after_success:
+- bash <(curl -s https://codecov.io/bash)

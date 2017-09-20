@@ -11,7 +11,7 @@ public class MessageObserverImpl implements MessageObserver {
     static Map<String, MessageSubscriber> messageSubscriberMap = new HashMap<>();
 
     @Override
-    public void subscribe( MessageSubscriber messageSubscriber) {
+    public void subscribe(MessageSubscriber messageSubscriber) {
         synchronized (messageSubscriberMap) {
 
             messageSubscriberMap.put(messageSubscriber.getPath(), messageSubscriber);

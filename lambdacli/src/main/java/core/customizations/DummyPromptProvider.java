@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class DummyPromptProvider implements PromptProvider {
     @Override
     public String getPrompt() {
-        return "dummy-service >";
+        return "lambda>";
     }
 
     @Override
