@@ -1,13 +1,14 @@
 package object_storage;
 
 import io.minio.MinioClient;
+import io.minio.Result;
 import io.minio.errors.*;
+import io.minio.messages.Upload;
 import launch.ConfigConstantKeys;
 import launch.Launcher;
 import org.apache.log4j.Logger;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
@@ -16,26 +17,26 @@ import java.security.NoSuchAlgorithmException;
 public class ObjectStorageImpl implements ObjectStorage {
     private static final Logger logger = Logger.getLogger(ObjectStorageImpl.class);
 
-    public final static String OBJ_CONNECTION_URL=Launcher.getStringValue(ConfigConstantKeys.CONFIG_OBJ_SERVER_CONNECTION_URL);
-    public final static String OBJ_CONNECTION_ACCESSKEY=Launcher.getStringValue(ConfigConstantKeys.CONFIG_OBJ_SERVER_CONNECTION_ACCESSKEY);
-    public final static String OBJ_CONNECTION_SECRETKEY=Launcher.getStringValue(ConfigConstantKeys.CONFIG_OBJ_SERVER_CONNECTION_SECRETKEY);
+    public final static String OBJ_CONNECTION_URL = Launcher.getString(ConfigConstantKeys.CONFIG_OBJ_SERVER_CONNECTION_URL);
+    public final static String OBJ_CONNECTION_ACCESSKEY = Launcher.getString(ConfigConstantKeys.CONFIG_OBJ_SERVER_CONNECTION_ACCESSKEY);
+    public final static String OBJ_CONNECTION_SECRETKEY = Launcher.getString(ConfigConstantKeys.CONFIG_OBJ_SERVER_CONNECTION_SECRETKEY);
 
-    private   MinioClient minioClient ;
-    private static ObjectStorageImpl instance=null;
+    private MinioClient minioClient;
+    private static ObjectStorageImpl instance = null;
 
 
-    private ObjectStorageImpl(){
+    private ObjectStorageImpl() {
         try {
-            minioClient=new MinioClient(OBJ_CONNECTION_URL, OBJ_CONNECTION_ACCESSKEY, OBJ_CONNECTION_SECRETKEY);
+            minioClient = new MinioClient(OBJ_CONNECTION_URL, OBJ_CONNECTION_ACCESSKEY, OBJ_CONNECTION_SECRETKEY);
         } catch (InvalidEndpointException e) {
-            e.printStackTrace();
+            logger.error("Invalid end point for Minio client", e);
         } catch (InvalidPortException e) {
-            e.printStackTrace();
+            logger.error("Invalid port for Minio client", e);
         }
     }
 
-    public static ObjectStorageImpl getInstance(){
-        if (instance==null){
+    public static ObjectStorageImpl getInstance() {
+        if (instance == null) {
             instance = new ObjectStorageImpl();
         }
         return instance;
@@ -43,41 +44,41 @@ public class ObjectStorageImpl implements ObjectStorage {
 
 
     @Override
-    public  void storeOBJ(String bucket,String objName,String file){
+    public void storeOBJ(String bucket, String objName, String file) {
 
         boolean isExist = false;
         try {
             isExist = minioClient.bucketExists(bucket);
-            if(isExist) {
+            if (isExist) {
                 logger.info("Bucket already exists.");
             } else {
                 // Make a new bucket called asiatrip to hold a zip file of photos.
                 minioClient.makeBucket(bucket);
                 logger.info("Bucket is created !");
             }
-            minioClient.putObject(bucket,objName, Launcher.TMP_FILE_LOCATION+file);
+            minioClient.putObject(bucket, objName, Launcher.TMP_FILE_LOCATION + file);
         } catch (InvalidBucketNameException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (InsufficientDataException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (InvalidKeyException e) {
             e.printStackTrace();
         } catch (NoResponseException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (XmlPullParserException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (ErrorResponseException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (InternalException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (InvalidArgumentException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (RegionConflictException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         }
 
     }
@@ -86,41 +87,63 @@ public class ObjectStorageImpl implements ObjectStorage {
     public InputStream getObj(String bucket, String objName) {
         InputStream inputStream = null;
         try {
-           inputStream= minioClient.getObject(bucket,objName);
+            inputStream = minioClient.getObject(bucket, objName);
         } catch (InvalidBucketNameException e) {
-            e.printStackTrace();
+            logger.error("Invalid bucket name: " + bucket, e);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (InsufficientDataException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (NoResponseException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (XmlPullParserException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (ErrorResponseException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (InternalException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         } catch (InvalidArgumentException e) {
-            e.printStackTrace();
+            logger.error("Minio client", e);
         }
         return inputStream;
     }
 
-    public static void main(String[] args) throws Exception {
-
-        ObjectStorage objectStorage = ObjectStorageImpl.getInstance();
-        InputStream stream = objectStorage.getObj("asiatrip","lambda.jar");
-        byte[] buf = new byte[1000];
-        int bytesRead;
-        FileOutputStream fileOutputStream=new FileOutputStream(Launcher.TMP_FILE_LOCATION+"lambda.jar");
-        while ((bytesRead = stream.read(buf, 0, buf.length)) >= 0) {
-          fileOutputStream.write(buf,0,bytesRead);
+    @Override
+    public boolean isIncompleteUpload(String bucket, String objName) {
+        boolean return_result = false;
+        try {
+            Iterable<Result<Upload>> myObjects = minioClient.listIncompleteUploads(bucket);
+            Upload upload = null;
+            for (Result<Upload> result : myObjects) {
+                upload = result.get();
+              return_result=upload.objectName().equals(objName);
+            }
+        } catch (InvalidBucketNameException e) {
+            logger.error("Invalid bucket name: " + bucket, e);
+        } catch (NoSuchAlgorithmException e) {
+            logger.error("Minio client", e);
+        } catch (InsufficientDataException e) {
+            logger.error("Minio client", e);
+        } catch (IOException e) {
+            logger.error("Minio client", e);
+        } catch (InvalidKeyException e) {
+            logger.error("Minio client", e);
+        } catch (NoResponseException e) {
+            logger.error("Minio client", e);
+        } catch (XmlPullParserException e) {
+            logger.error("Minio client", e);
+        } catch (ErrorResponseException e) {
+            logger.error("Minio client", e);
+        } catch (InternalException e) {
+            logger.error("Minio client", e);
         }
+
+
+        return return_result;
     }
 
 

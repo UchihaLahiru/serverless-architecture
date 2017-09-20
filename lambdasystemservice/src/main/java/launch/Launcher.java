@@ -26,15 +26,14 @@ public class Launcher {
         }
     }
 
-    public static final String TMP_FILE_LOCATION=Launcher.getStringValue(ConfigConstantKeys.TRANSPORT_TMP_FILE_LOCATION);
-    private static final ExecutorService service = Executors.newFixedThreadPool(getIntValue(ConfigConstantKeys.LAUNCHER_THREADS));
+    public static final String TMP_FILE_LOCATION=Launcher.getString(ConfigConstantKeys.TRANSPORT_TMP_FILE_LOCATION);
+    private static final ExecutorService service = Executors.newFixedThreadPool(getInt(ConfigConstantKeys.LAUNCHER_THREADS));
 
-    public static String getStringValue(String tag) {
+    public static String getString(String tag) {
         return xmlConfiguration.getString(tag);
     }
 
-    public static int getIntValue(String tag) {
-
+    public static int getInt(String tag) {
         return xmlConfiguration.getInt(tag);
     }
 

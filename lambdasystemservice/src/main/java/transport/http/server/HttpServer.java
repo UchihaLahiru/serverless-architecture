@@ -19,11 +19,11 @@ import transport.http.server.impl.MessageObserverImpl;
 public class HttpServer {
     public static final String TRANSPORT_SERVER_PORT = "transport.server.port";
     public static final String TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT = "transport.server.bossGroupThreadCount";
-    static final int LOCAL_PORT = Launcher.getIntValue(TRANSPORT_SERVER_PORT);
+    static final int LOCAL_PORT = Launcher.getInt(TRANSPORT_SERVER_PORT);
     private static final Logger logger = Logger.getLogger(HttpServer.class);
     public static final String REST_MAPPING_MAPPING_XML = "rest_mapping/mapping.xml";
     // Configure the bootstrap.
-    static EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getIntValue(TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
+    static EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getInt(TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
     static EventLoopGroup workerGroup = new NioEventLoopGroup();
     // Configure the bootstrap.
     private static HttpServer httpServer = null;

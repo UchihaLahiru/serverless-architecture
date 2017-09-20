@@ -29,7 +29,7 @@ public class OpenstackAdminConnection {
 
     public static OpenstackAdminConnection getOpenstackAdminConnection() {
         if (openstackAdminConnection == null)
-            openstackAdminConnection = new OpenstackAdminConnection(Launcher.getStringValue("connections.openstack.adminConnection"), Launcher.getStringValue("connections.openstack.password"));
+            openstackAdminConnection = new OpenstackAdminConnection(Launcher.getString("connections.openstack.adminConnection"), Launcher.getString("connections.openstack.password"));
         ;
         return openstackAdminConnection;
     }
