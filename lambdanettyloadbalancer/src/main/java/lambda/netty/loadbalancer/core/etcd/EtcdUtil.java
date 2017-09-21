@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package lambda.netty.loadbalancer.core.etcd;
 
 import com.coreos.jetcd.Client;
@@ -36,7 +55,7 @@ import java.util.concurrent.ExecutionException;
 
 public class EtcdUtil {
     final static Logger logger = Logger.getLogger(EtcdUtil.class);
-    public static String ETCD_CLUSTER = Launcher.getString(ConfigConstants.ETCD_CLUSTER_CONNECTIONS_URL);
+    public static String ETCD_CLUSTER = Launcher.getString(ConfigConstants.CONFIG_ETCD_CLUSTER_CONNECTIONS_URL);
     private static KV kvClient = null;
     private static Client client = null;
     private static GetOption getOption = GetOption.newBuilder().withSerializable(true).build();
@@ -44,7 +63,9 @@ public class EtcdUtil {
     static {
 
         if (kvClient == null && client == null) {
+            logger.info("creating Etcd client !");
             client = Client.builder().endpoints(ETCD_CLUSTER).build();
+
             kvClient = client.getKVClient();
         }
     }
@@ -116,44 +137,44 @@ public class EtcdUtil {
 //        System.out.println(txnResponse.getGetResponses());
     }
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        Watch watch = null;
-        Watch.Watcher watcher = null;
-
-        try {
-            watch = client.getWatchClient();
-            watcher = watch.watch(ByteSequence.fromString("aaa"));
-
-            for (int i = 0; i < 5; i++) {
-                WatchResponse response = watcher.listen();
-
-                for (WatchEvent event : response.getEvents()) {
-
-                    System.out.println(event.getEventType());
-                    System.out.println(Optional.ofNullable(event.getKeyValue().getKey())
-                            .map(ByteSequence::toStringUtf8)
-                            .orElse(""));
-                    System.out.println(Optional.ofNullable(event.getKeyValue().getValue())
-                            .map(ByteSequence::toStringUtf8)
-                            .orElse(""));
-
-                }
-            }
-        } catch (Exception e) {
-            if (watcher != null) {
-                watcher.close();
-            }
-
-            if (watch != null) {
-                watch.close();
-            }
-
-            if (client != null) {
-                client.close();
-            }
-        }
-
-    }
-
+//    public static void main(String[] args) throws ExecutionException, InterruptedException {
+//        Watch watch = null;
+//        Watch.Watcher watcher = null;
+//
+//        try {
+//            watch = client.getWatchClient();
+//            watcher = watch.watch(ByteSequence.fromString("aaa"));
+//
+//            for (int i = 0; i < 5; i++) {
+//                WatchResponse response = watcher.listen();
+//
+//                for (WatchEvent event : response.getEvents()) {
+//
+//                    System.out.println(event.getEventType());
+//                    System.out.println(Optional.ofNullable(event.getKeyValue().getKey())
+//                            .map(ByteSequence::toStringUtf8)
+//                            .orElse(""));
+//                    System.out.println(Optional.ofNullable(event.getKeyValue().getValue())
+//                            .map(ByteSequence::toStringUtf8)
+//                            .orElse(""));
+//
+//                }
+//            }
+//        } catch (Exception e) {
+//            if (watcher != null) {
+//                watcher.close();
+//            }
+//
+//            if (watch != null) {
+//                watch.close();
+//            }
+//
+//            if (client != null) {
+//                client.close();
+//            }
+//        }
+//
+//    }
+//
 
 }

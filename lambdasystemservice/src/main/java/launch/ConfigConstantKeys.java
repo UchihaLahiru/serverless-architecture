@@ -17,30 +17,17 @@
  * under the License.
  */
 
-package core.utilities;
+package launch;
 
-public enum FileType {
-    JAVA("jar", 0, "jar"), NODE_JS("nodejs", 1, "js"), PYTHON("python", 2, "py"), XML("xml", 3, "xml");
-    private String fileType;
-    private int code;
-    private String extention;
+final public class ConfigConstantKeys {
+    public static final String LAUNCHER_THREADS = "launcher.threads";
+    //transport service
+    public static final String TRANSPORT_TMP_FILE_LOCATION = "transport.server.tmp-file-location";
+    public static final String FILE_UPLOAD_URL = "transport.server.file-upload-url";
 
-    FileType(String fileType, int code, String extention) {
-        this.fileType = fileType;
-        this.code = code;
-        this.extention = extention;
-    }
 
-    public String getFileType() {
-        return fileType;
-    }
-
-    public int getCode() {
-        return code;
-    }
-
-    public String getExtention() {
-        return extention;
-    }
-
+    //obj-server
+    public static final String CONFIG_OBJ_SERVER_CONNECTION_URL = "obj-storage.connection.url";
+    public static final String CONFIG_OBJ_SERVER_CONNECTION_ACCESSKEY = "obj-storage.connection.accesskey";
+    public static final String CONFIG_OBJ_SERVER_CONNECTION_SECRETKEY = "obj-storage.connection.secretkey";
 }

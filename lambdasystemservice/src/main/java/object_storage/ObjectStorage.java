@@ -17,30 +17,33 @@
  * under the License.
  */
 
-package core.utilities;
+package object_storage;
 
-public enum FileType {
-    JAVA("jar", 0, "jar"), NODE_JS("nodejs", 1, "js"), PYTHON("python", 2, "py"), XML("xml", 3, "xml");
-    private String fileType;
-    private int code;
-    private String extention;
+import java.io.InputStream;
 
-    FileType(String fileType, int code, String extention) {
-        this.fileType = fileType;
-        this.code = code;
-        this.extention = extention;
-    }
+public interface ObjectStorage {
+    /**
+     * This method will store given file in the tmp file location in the obj server
+     *
+     * @param bucket
+     * @param objName
+     * @param file    file name
+     */
+    public void storeOBJ(String bucket, String objName, String file);
 
-    public String getFileType() {
-        return fileType;
-    }
+    /**
+     * @param bucket  Name should be at least 3 characters long
+     * @param objName
+     * @return InputStream obj which holds the obj
+     */
+    InputStream getObj(String bucket, String objName);
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getExtention() {
-        return extention;
-    }
-
+    /**
+     * Returns List of incomplete uploads
+     *
+     * @param bucket
+     * @param objName
+     * @return
+     */
+    boolean isIncompleteUpload(String bucket, String objName);
 }

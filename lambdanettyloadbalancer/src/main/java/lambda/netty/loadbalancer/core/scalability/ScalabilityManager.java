@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package lambda.netty.loadbalancer.core.scalability;
 
 import lambda.netty.loadbalancer.core.ConfigConstants;
@@ -12,15 +31,15 @@ import java.util.concurrent.Executors;
 /**
  * This class runs in a separate thread quering the queue for a scaling task
  */
-public class ScalabilityManager implements Runnable{
+public class ScalabilityManager implements Runnable {
 
     private static final Logger logger = Logger.getLogger(ScalabilityManager.class);
 
-    private static BlockingQueue<String> queue = new ArrayBlockingQueue<String>(Launcher.getIntValue(ConfigConstants.SCALABILITY_BLOCKING_QUEUE_SIZE));
-    private  static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.SCALABILITY_THREAD_COUNT));
-    private static int QUERY_TIME=Launcher.getIntValue(ConfigConstants.SCALABILITY_QUERY_TIME);
+    private static BlockingQueue<String> queue = new ArrayBlockingQueue<String>(Launcher.getIntValue(ConfigConstants.CONFIG_SCALABILITY_BLOCKING_QUEUE_SIZE));
+    private static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.CONFIG_SCALABILITY_THREAD_COUNT));
+    private static int QUERY_TIME = Launcher.getIntValue(ConfigConstants.CONFIG_SCALABILITY_QUERY_TIME);
 
-    public  void run() {
+    public void run() {
         logger.info("Starting scalability service !");
         while (true) {
 
@@ -40,9 +59,10 @@ public class ScalabilityManager implements Runnable{
             }
         }
     }
-       public static void addToQueue(String domain){
+
+    public static void addToQueue(String domain) {
         queue.add(domain);
     }
-    }
+}
 
 

@@ -1,7 +1,32 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements. See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership. The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package lambda.netty.loadbalancer.core.launch;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpRequestEncoder;
 import lambda.netty.loadbalancer.core.ConfigConstants;
 import lambda.netty.loadbalancer.core.Server;
+import lambda.netty.loadbalancer.core.SysService.SysServiceConnection;
+import lambda.netty.loadbalancer.core.SysService.SysServiceHandlersInit;
 import lambda.netty.loadbalancer.core.scalability.ScalabilityManager;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
@@ -16,6 +41,7 @@ import java.util.concurrent.Executors;
 public class Launcher {
     private static final Logger logger = Logger.getLogger(Launcher.class);
     private final static String CONFIG_PROPERTIES_FILE = "config.xml";
+
     static {
         Configurations configs = new Configurations();
         try {
@@ -27,11 +53,9 @@ public class Launcher {
 
 
     // start implementing after the static block. it's loading the configuration
-    private  static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.LAUNCHER_THREADS));
-    public final static boolean SCALABILITY_ENABLED=Launcher.getBoolean(ConfigConstants.CONFIG_SCALABILITY_ENABLED);
-
+    private static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.CONFIG_LAUNCHER_THREADS));
+    public final static boolean SCALABILITY_ENABLED = Launcher.getBoolean(ConfigConstants.CONFIG_SCALABILITY_ENABLED);
     private static XMLConfiguration xmlConfiguration;
-
 
 
     public static String getString(String tag) {
@@ -57,22 +81,24 @@ public class Launcher {
         if (obj instanceof List) {
             List tmp = (List) obj;
             List<Integer> tmp_return = new ArrayList<>(tmp.size());
-            tmp.forEach(x->tmp_return.add(Integer.parseInt((String) x)));
+            tmp.forEach(x -> tmp_return.add(Integer.parseInt((String) x)));
 
             return tmp_return;
         }
         return null;
     }
 
-    public static boolean getBoolean(String key){
+    public static boolean getBoolean(String key) {
         String val = getString(key);
 
-        return val.equals("true")? true:false;
+        return val.equals("true") ? true : false;
     }
+
     public static long getLong(String s) {
 
         return xmlConfiguration.getLong(s);
     }
+
     public static void main(String[] args) throws InterruptedException {
 
 //        State  state = new StateImpl();
@@ -91,14 +117,21 @@ public class Launcher {
 //        } catch (ExecutionException e) {
 //            e.printStackTrace();
 //        }
-        if(SCALABILITY_ENABLED){
+
+        try {
+            ConfigLogger.printFields();
+        } catch (Exception e) {
+            logger.error("Cannot print Configurations !", e);
+        }
+
+
+        if (SCALABILITY_ENABLED) {
             service.submit(new ScalabilityManager());
-        }else {
+        } else {
             logger.info("Scalability is not enabled !");
         }
         service.submit(new Server());
 
     }
-
 
 }
