@@ -2,8 +2,11 @@ package compute;
 
 import availability.UserPing;
 import connections.OpenstackAdminConnection;
+import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.compute.Server;
+import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
+import com.coreos.jetcd.kv.PutResponse;
 
 /**
  * Created by deshan on 9/5/17.
@@ -21,12 +24,13 @@ public class LbImplement implements LoadBalancerInteract {
     }
 
     @Override
-    public void startFunction(String instanceID){
+    public boolean startFunction(String instanceID) {
+        String ipaddress = null;
         boolean test = false;
         int count=0;
         this.serverLaunch.startOSVinstance(instanceID);
         Server server = this.os.compute().servers().get(instanceID);
-        String ipaddress = server.getAccessIPv4();
+        ipaddress = server.getAccessIPv4();
 
         while (!test) {
             test = ping.pingHostByCommand(ipaddress);
@@ -41,8 +45,10 @@ public class LbImplement implements LoadBalancerInteract {
 
         if(test){
             //write to etcd
+
             //notify lb
         }
+        return test;
 
     }
 }
