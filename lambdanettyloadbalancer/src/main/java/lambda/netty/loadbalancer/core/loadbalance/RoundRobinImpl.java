@@ -33,6 +33,7 @@
 
 package lambda.netty.loadbalancer.core.loadbalance;
 
+import lambda.netty.loadbalancer.core.loadbalance.statemodels.OSVInstance;
 import lambda.netty.loadbalancer.core.loadbalance.statemodels.State;
 
 import java.util.Queue;
@@ -41,9 +42,10 @@ public class RoundRobinImpl implements LoadBalance {
     @Override
     public String getRemoteHost(State stateImpl) {
 
-        Queue<String> queue = stateImpl.getHosts();
-        String tmp = queue.poll();
+        Queue<OSVInstance> queue = stateImpl.getOSVInstance();
+        OSVInstance tmp = queue.poll();
+        String result = tmp.getHost();
         queue.add(tmp);
-        return tmp;
+        return result;
     }
 }

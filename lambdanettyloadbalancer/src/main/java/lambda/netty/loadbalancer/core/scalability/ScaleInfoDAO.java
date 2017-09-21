@@ -41,7 +41,6 @@ public class ScaleInfoDAO {
 
     private static Map<String, ResponseTimeInfo> responseTimesMap = new HashMap(Launcher.getIntValue(ConfigConstants.CONFIG_SCALABILITY_MAP_SIZE));
     final private static long THRESHOLD = Launcher.getLong(ConfigConstants.CONFIG_SCALABILITY_THRESHOLD);//milliseconds
-    private static Object lock = new Object();
 
     private ScaleInfoDAO() {
     }
@@ -50,7 +49,7 @@ public class ScaleInfoDAO {
         if (domain == null) {
             throw new NullPointerException("Domain is null");
         }
-        synchronized (lock) {
+        synchronized (responseTimesMap) {
 
             ResponseTimeInfo responseTimeInfo = responseTimesMap.get(domain);
 

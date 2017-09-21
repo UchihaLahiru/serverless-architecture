@@ -79,6 +79,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest request = (FullHttpRequest) msg;
+            //domain
             instanceID = request.headers().get("domain");
 
             EtcdUtil.getValue(instanceID).thenAccept(x -> {
@@ -92,7 +93,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
                 } else if (stateImpl.getState() == InstanceStates.STARTING) {
                     String state = EtcdUtil.setWatcher(instanceID);
                     State tmp = StateImplJsonHelp.getObject(state);
-                    String remoteIp = tmp.getHosts().peek();
+                    String remoteIp = tmp.getOSVInstance().peek().getHost();
                     ProxyEvent proxyEvent = new ProxyEvent(remoteIp);
                     proxyEvent.setDomain(instanceID);
                     ctx.fireUserEventTriggered(proxyEvent);
