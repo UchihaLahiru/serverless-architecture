@@ -20,11 +20,10 @@
 package launch;
 
 final public class ConfigConstantKeys {
-
-    //transport service
-    public static final String TRANSPORT_TMP_FILE_LOCATION = "transport.server.tmp.file.location";
     public static final String LAUNCHER_THREADS = "launcher.threads";
-    public static final String FILE_UPLOAD_URL = "transport.server.file.upload.url";
+    //transport service
+    public static final String TRANSPORT_TMP_FILE_LOCATION = "transport.server.tmp-file-location";
+    public static final String FILE_UPLOAD_URL = "transport.server.file-upload-url";
 
 
     //obj-server

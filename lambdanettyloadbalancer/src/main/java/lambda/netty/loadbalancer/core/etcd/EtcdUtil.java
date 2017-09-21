@@ -52,7 +52,9 @@ public class EtcdUtil {
     static {
 
         if (kvClient == null && client == null) {
+            logger.info("creating Etcd client !");
             client = Client.builder().endpoints(ETCD_CLUSTER).build();
+
             kvClient = client.getKVClient();
         }
     }
@@ -124,44 +126,44 @@ public class EtcdUtil {
 //        System.out.println(txnResponse.getGetResponses());
     }
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        Watch watch = null;
-        Watch.Watcher watcher = null;
-
-        try {
-            watch = client.getWatchClient();
-            watcher = watch.watch(ByteSequence.fromString("aaa"));
-
-            for (int i = 0; i < 5; i++) {
-                WatchResponse response = watcher.listen();
-
-                for (WatchEvent event : response.getEvents()) {
-
-                    System.out.println(event.getEventType());
-                    System.out.println(Optional.ofNullable(event.getKeyValue().getKey())
-                            .map(ByteSequence::toStringUtf8)
-                            .orElse(""));
-                    System.out.println(Optional.ofNullable(event.getKeyValue().getValue())
-                            .map(ByteSequence::toStringUtf8)
-                            .orElse(""));
-
-                }
-            }
-        } catch (Exception e) {
-            if (watcher != null) {
-                watcher.close();
-            }
-
-            if (watch != null) {
-                watch.close();
-            }
-
-            if (client != null) {
-                client.close();
-            }
-        }
-
-    }
-
+//    public static void main(String[] args) throws ExecutionException, InterruptedException {
+//        Watch watch = null;
+//        Watch.Watcher watcher = null;
+//
+//        try {
+//            watch = client.getWatchClient();
+//            watcher = watch.watch(ByteSequence.fromString("aaa"));
+//
+//            for (int i = 0; i < 5; i++) {
+//                WatchResponse response = watcher.listen();
+//
+//                for (WatchEvent event : response.getEvents()) {
+//
+//                    System.out.println(event.getEventType());
+//                    System.out.println(Optional.ofNullable(event.getKeyValue().getKey())
+//                            .map(ByteSequence::toStringUtf8)
+//                            .orElse(""));
+//                    System.out.println(Optional.ofNullable(event.getKeyValue().getValue())
+//                            .map(ByteSequence::toStringUtf8)
+//                            .orElse(""));
+//
+//                }
+//            }
+//        } catch (Exception e) {
+//            if (watcher != null) {
+//                watcher.close();
+//            }
+//
+//            if (watch != null) {
+//                watch.close();
+//            }
+//
+//            if (client != null) {
+//                client.close();
+//            }
+//        }
+//
+//    }
+//
 
 }

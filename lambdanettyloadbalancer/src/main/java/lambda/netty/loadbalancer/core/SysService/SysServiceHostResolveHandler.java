@@ -24,6 +24,7 @@ import io.netty.channel.*;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.*;
 import lambda.netty.loadbalancer.core.ConfigConstants;
+import lambda.netty.loadbalancer.core.Server;
 import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
 import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
 import lambda.netty.loadbalancer.core.launch.Launcher;
@@ -42,12 +43,12 @@ import java.nio.charset.StandardCharsets;
 
 public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     final static Logger logger = Logger.getLogger(SysServiceHostResolveHandler.class);
-    private final static String HOST = "Host";
-    private static final String SYS_HOST = Launcher.getStringList(ConfigConstants.CONFIG_SYS_SERVICE_CONNECTIONS_CONNECTION_HOST).get(0);
-    private static final int SYS_PORT = Launcher.getIntList(ConfigConstants.CONFIG_SYS_SERVICE_CONNECTIONS_CONNECTION_PORT).get(0);
+    private static final String SYS_HOST = Server.SYS_SERVICE_CONNECTIONS.get(0).getHost();
+    private static final int SYS_PORT = Server.SYS_SERVICE_CONNECTIONS.get(0).getPort();
+
     private static final String SYS_PATH = Launcher.getString(ConfigConstants.CONFIG_SYS_SERVICE_CONNECTIONS_PATH);
     private static final String SYS_PROTOCOL = Launcher.getString(ConfigConstants.CONFIG_SYS_SERVICE_CONNECTIONS_PROTOCOL);
-    Channel remoteHostChannel = null;
+    Channel sysServiceChannel = null;
     EventLoopGroup remoteHostEventLoopGroup;
     String instanceID;
 
@@ -118,10 +119,10 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         request.headers().set("domain", instanceID);
 
         // Send the HTTP request.
-        remoteHostChannel.writeAndFlush(request);
+        sysServiceChannel.writeAndFlush(request);
         // Wait for the server to close the connection.
         try {
-            remoteHostChannel.closeFuture().sync();
+            sysServiceChannel.closeFuture().sync();
         } catch (InterruptedException e) {
             logger.error("Couldn't close the connection with the Sys-service !", e);
         }
@@ -153,7 +154,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
         public void operationComplete(ChannelFuture channelFuture) throws Exception {
             if (channelFuture.isSuccess()) {
                 logger.info("connected to the System service: " + SYS_HOST + ":" + SYS_PORT + SYS_PATH);
-                remoteHostChannel = channelFuture.channel();
+                sysServiceChannel = channelFuture.channel();
                 //Reading the main channel after Sys service is connected
                 mainChannel.read();
             } else {

@@ -19,8 +19,14 @@
 
 package lambda.netty.loadbalancer.core.launch;
 
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.codec.http.HttpRequestEncoder;
 import lambda.netty.loadbalancer.core.ConfigConstants;
 import lambda.netty.loadbalancer.core.Server;
+import lambda.netty.loadbalancer.core.SysService.SysServiceConnection;
+import lambda.netty.loadbalancer.core.SysService.SysServiceHandlersInit;
 import lambda.netty.loadbalancer.core.scalability.ScalabilityManager;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
@@ -49,7 +55,6 @@ public class Launcher {
     // start implementing after the static block. it's loading the configuration
     private static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.CONFIG_LAUNCHER_THREADS));
     public final static boolean SCALABILITY_ENABLED = Launcher.getBoolean(ConfigConstants.CONFIG_SCALABILITY_ENABLED);
-
     private static XMLConfiguration xmlConfiguration;
 
 
@@ -112,6 +117,7 @@ public class Launcher {
 //        } catch (ExecutionException e) {
 //            e.printStackTrace();
 //        }
+
         try {
             ConfigLogger.printFields();
         } catch (Exception e) {
@@ -127,6 +133,5 @@ public class Launcher {
         service.submit(new Server());
 
     }
-
 
 }

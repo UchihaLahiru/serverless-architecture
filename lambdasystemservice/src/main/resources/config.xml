@@ -27,8 +27,8 @@
             <host>localhost</host>
             <port>8084</port>
             <bossGroupThreadCount>1</bossGroupThreadCount>
-            <file.upload.url>/file</file.upload.url>
-            <tmp.file.location>file_storage_tmp/</tmp.file.location>
+            <file-upload-url>/file</file-upload-url>
+            <tmp-file-location>file_storage_tmp/</tmp-file-location>
         </server>
     </transport>
 
