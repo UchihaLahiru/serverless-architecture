@@ -21,8 +21,6 @@ public class Launcher {
         Configurations configs = new Configurations();
         try {
             xmlConfiguration = configs.xml(CONFIG_PROPERTIES_FILE);
-            ReloadingStrategy strategy = new FileChangedReloadingStrategy();
-            strategy.setRefreshDelay(5000);
         } catch (ConfigurationException e) {
             logger.error("Cannot read configurations !", e);
         }
