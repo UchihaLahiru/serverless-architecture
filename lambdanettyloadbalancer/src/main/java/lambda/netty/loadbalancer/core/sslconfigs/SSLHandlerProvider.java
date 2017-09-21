@@ -20,11 +20,11 @@ public class SSLHandlerProvider {
     private static final String ALGORITHM_SUN_X509 = "SunX509";
     private static final String ALGORITHM = "ssl.KeyManagerFactory.algorithm";
     ;
-    private static final String PROTOCOL = Launcher.getString(ConfigConstants.TRANSPORT_SSL_CONFIG_PROTOCOL);
-    private static final String KEYSTORE = Launcher.getString(ConfigConstants.TRANSPORT_SSL_CONFIG_KEYSTORE_FILE);
-    private static final String KEYSTORE_TYPE = Launcher.getString(ConfigConstants.TRANSPORT_SSL_CONFIG_KEYSTORE_TYPE);
-    private static final String KEYSTORE_PASSWORD = Launcher.getString(ConfigConstants.TRANSPORT_SSL_CONFIG_KEYSTORE_PASSWORD);
-    private static final String CERT_PASSWORD = Launcher.getString(ConfigConstants.TRANSPORT_SSL_CONFIG_CERT_PASSWORD);
+    private static final String PROTOCOL = Launcher.getString(ConfigConstants.CONFIG_TRANSPORT_SSL_CONFIG_PROTOCOL);
+    private static final String KEYSTORE = Launcher.getString(ConfigConstants.CONFIG_TRANSPORT_SSL_CONFIG_KEYSTORE_FILE);
+    private static final String KEYSTORE_TYPE = Launcher.getString(ConfigConstants.CONFIG_TRANSPORT_SSL_CONFIG_KEYSTORE_TYPE);
+    private static final String KEYSTORE_PASSWORD = Launcher.getString(ConfigConstants.CONFIG_TRANSPORT_SSL_CONFIG_KEYSTORE_PASSWORD);
+    private static final String CERT_PASSWORD = Launcher.getString(ConfigConstants.CONFIG_TRANSPORT_SSL_CONFIG_CERT_PASSWORD);
     private static SSLContext serverSSLContext = null;
 
 

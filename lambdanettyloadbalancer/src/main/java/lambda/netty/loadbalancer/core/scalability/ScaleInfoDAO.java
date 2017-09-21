@@ -20,8 +20,8 @@ public class ScaleInfoDAO {
 
     private static final Logger logger = Logger.getLogger(ScaleInfoDAO.class);
 
-    private static Map<String, ResponseTimeInfo> responseTimesMap = new HashMap(Launcher.getIntValue(ConfigConstants.SCALABILITY_MAP_SIZE));
-    final private static long THRESHOLD = Launcher.getLong(ConfigConstants.SCALABILITY_THRESHOLD);//milliseconds
+    private static Map<String, ResponseTimeInfo> responseTimesMap = new HashMap(Launcher.getIntValue(ConfigConstants.CONFIG_SCALABILITY_MAP_SIZE));
+    final private static long THRESHOLD = Launcher.getLong(ConfigConstants.CONFIG_SCALABILITY_THRESHOLD);//milliseconds
     private static Object lock = new Object();
 
     private ScaleInfoDAO() {

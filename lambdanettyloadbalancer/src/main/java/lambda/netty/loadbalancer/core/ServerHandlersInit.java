@@ -34,7 +34,7 @@ public class ServerHandlersInit extends ChannelInitializer<SocketChannel> {
         }
         channelPipeline.addLast(
                 new HttpRequestDecoder(),
-                new HttpObjectAggregator(Launcher.getIntValue(ConfigConstants.TRANSPORT_SERVER_HTTPOBJECTAGGREGATOR)),
+                new HttpObjectAggregator(Launcher.getIntValue(ConfigConstants.CONFIG_TRANSPORT_SERVER_HTTPOBJECTAGGREGATOR)),
                 new SysServiceHostResolveHandler(remoteHostEventLoopGroup),
                 new ProxyFrontendHandler());
 

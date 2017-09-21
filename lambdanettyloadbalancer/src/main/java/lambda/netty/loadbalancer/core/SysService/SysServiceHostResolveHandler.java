@@ -24,10 +24,10 @@ import java.nio.charset.StandardCharsets;
 public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     final static Logger logger = Logger.getLogger(SysServiceHostResolveHandler.class);
     private final static String HOST = "Host";
-    private static final String SYS_HOST = Launcher.getStringList(ConfigConstants.SYS_SERVICE_CONNECTIONS_CONNECTION_HOST).get(0);
-    private static final int SYS_PORT = Launcher.getIntList(ConfigConstants.SYS_SERVICE_CONNECTIONS_CONNECTION_PORT).get(0);
-    private static final String SYS_PATH = Launcher.getString(ConfigConstants.SYS_SERVICE_CONNECTIONS_PATH);
-    private static final String SYS_PROTOCOL = Launcher.getString(ConfigConstants.SYS_SERVICE_CONNECTIONS_PROTOCOL);
+    private static final String SYS_HOST = Launcher.getStringList(ConfigConstants.CONFIG_SYS_SERVICE_CONNECTIONS_CONNECTION_HOST).get(0);
+    private static final int SYS_PORT = Launcher.getIntList(ConfigConstants.CONFIG_SYS_SERVICE_CONNECTIONS_CONNECTION_PORT).get(0);
+    private static final String SYS_PATH = Launcher.getString(ConfigConstants.CONFIG_SYS_SERVICE_CONNECTIONS_PATH);
+    private static final String SYS_PROTOCOL = Launcher.getString(ConfigConstants.CONFIG_SYS_SERVICE_CONNECTIONS_PROTOCOL);
     Channel remoteHostChannel = null;
     EventLoopGroup remoteHostEventLoopGroup;
     String instanceID;

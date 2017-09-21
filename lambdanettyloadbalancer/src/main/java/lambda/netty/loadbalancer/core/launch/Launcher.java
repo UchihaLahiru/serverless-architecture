@@ -28,7 +28,7 @@ public class Launcher {
 
 
     // start implementing after the static block. it's loading the configuration
-    private static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.LAUNCHER_THREADS));
+    private static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.CONFIG_LAUNCHER_THREADS));
     public final static boolean SCALABILITY_ENABLED = Launcher.getBoolean(ConfigConstants.CONFIG_SCALABILITY_ENABLED);
 
     private static XMLConfiguration xmlConfiguration;
@@ -93,6 +93,13 @@ public class Launcher {
 //        } catch (ExecutionException e) {
 //            e.printStackTrace();
 //        }
+        try {
+            ConfigLogger.printFields();
+        } catch (Exception e) {
+            logger.error("Cannot print Configurations !", e);
+        }
+
+
         if (SCALABILITY_ENABLED) {
             service.submit(new ScalabilityManager());
         } else {

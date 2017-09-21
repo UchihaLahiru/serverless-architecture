@@ -16,9 +16,9 @@ public class ScalabilityManager implements Runnable {
 
     private static final Logger logger = Logger.getLogger(ScalabilityManager.class);
 
-    private static BlockingQueue<String> queue = new ArrayBlockingQueue<String>(Launcher.getIntValue(ConfigConstants.SCALABILITY_BLOCKING_QUEUE_SIZE));
-    private static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.SCALABILITY_THREAD_COUNT));
-    private static int QUERY_TIME = Launcher.getIntValue(ConfigConstants.SCALABILITY_QUERY_TIME);
+    private static BlockingQueue<String> queue = new ArrayBlockingQueue<String>(Launcher.getIntValue(ConfigConstants.CONFIG_SCALABILITY_BLOCKING_QUEUE_SIZE));
+    private static ExecutorService service = Executors.newFixedThreadPool(Launcher.getIntValue(ConfigConstants.CONFIG_SCALABILITY_THREAD_COUNT));
+    private static int QUERY_TIME = Launcher.getIntValue(ConfigConstants.CONFIG_SCALABILITY_QUERY_TIME);
 
     public void run() {
         logger.info("Starting scalability service !");

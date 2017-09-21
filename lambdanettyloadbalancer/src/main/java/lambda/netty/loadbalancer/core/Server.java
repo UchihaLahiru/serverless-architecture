@@ -16,16 +16,16 @@ import org.apache.log4j.Logger;
 public class Server implements Runnable {
     private static final Logger logger = Logger.getLogger(Server.class);
 
-    static final int LOCAL_PORT = Launcher.getIntValue(ConfigConstants.TRANSPORT_SERVER_PORT);
+    static final int LOCAL_PORT = Launcher.getIntValue(ConfigConstants.CONFIG_TRANSPORT_SERVER_PORT);
 
-    public static final boolean ENABLE_SSL = Launcher.getBoolean(ConfigConstants.TRANSPORT_SSL_CONFIG_ENABLED);
+    public static final boolean ENABLE_SSL = Launcher.getBoolean(ConfigConstants.CONFIG_TRANSPORT_SSL_CONFIG_ENABLED);
 
 
     @Override
     public void run() {
         logger.info("Starting Http Transport Service !");
         // Configure the bootstrap.
-        EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getIntValue(ConfigConstants.TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
+        EventLoopGroup bossGroup = new NioEventLoopGroup(Launcher.getIntValue(ConfigConstants.CONFIG_TRANSPORT_SERVER_BOSS_GROUP_THREAD_COUNT));
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         EventLoopGroup remoteHostEventLoopGroup = new NioEventLoopGroup();
 
