@@ -27,6 +27,8 @@ import lambda.netty.loadbalancer.core.ConfigConstants;
 import lambda.netty.loadbalancer.core.Server;
 import lambda.netty.loadbalancer.core.SysService.SysServiceConnection;
 import lambda.netty.loadbalancer.core.SysService.SysServiceHandlersInit;
+import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
+import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
 import lambda.netty.loadbalancer.core.scalability.ScalabilityManager;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
@@ -99,7 +101,7 @@ public class Launcher {
         return xmlConfiguration.getLong(s);
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, EtcdClientException {
 
 //        State  state = new StateImpl();
 //        state.pushHost("127.0.0.1:8082");
@@ -117,21 +119,22 @@ public class Launcher {
 //        } catch (ExecutionException e) {
 //            e.printStackTrace();
 //        }
+//
+//        try {
+//            ConfigLogger.printFields();
+//        } catch (Exception e) {
+//            logger.error("Cannot print Configurations !", e);
+//        }
+//
+//
+//        if (SCALABILITY_ENABLED) {
+//            service.submit(new ScalabilityManager());
+//        } else {
+//            logger.info("Scalability is not enabled !");
+//        }
+//        service.submit(new Server());
 
-        try {
-            ConfigLogger.printFields();
-        } catch (Exception e) {
-            logger.error("Cannot print Configurations !", e);
-        }
-
-
-        if (SCALABILITY_ENABLED) {
-            service.submit(new ScalabilityManager());
-        } else {
-            logger.info("Scalability is not enabled !");
-        }
-        service.submit(new Server());
-
+        EtcdUtil.putValue("aaa","klk");
     }
 
 }
