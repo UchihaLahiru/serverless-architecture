@@ -79,6 +79,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest request = (FullHttpRequest) msg;
+            //domain
             instanceID = request.headers().get("domain");
 
             EtcdUtil.getValue(instanceID).thenAccept(x -> {
@@ -89,11 +90,18 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
                 if (stateImpl.getState() == InstanceStates.DOWN) {
                     logger.info("No instance is up ! informing Sys-service ");
                     requestIp();
+                } else if (stateImpl.getState() == InstanceStates.STARTING) {
+                    String state = EtcdUtil.setWatcher(instanceID);
+                    State tmp = StateImplJsonHelp.getObject(state);
+                    String remoteIp = tmp.getOSVInstance().peek().getHost();
+                    ProxyEvent proxyEvent = new ProxyEvent(remoteIp);
+                    proxyEvent.setDomain(instanceID);
+                    ctx.fireUserEventTriggered(proxyEvent);
                 } else if (stateImpl.getState() == InstanceStates.RUNNING) {
                     logger.info("These instances are up and running");
                     String remoteIp = LoadBalanceUtil.getRemoteHost(stateImpl);
                     try {
-                        EtcdUtil.putValue("localhost", StateImplJsonHelp.toString(stateImpl));
+                        EtcdUtil.putValue(instanceID, StateImplJsonHelp.toString(stateImpl));
                     } catch (EtcdClientException e) {
                         logger.error("Cannot connect to ETCD !", e);
                     }

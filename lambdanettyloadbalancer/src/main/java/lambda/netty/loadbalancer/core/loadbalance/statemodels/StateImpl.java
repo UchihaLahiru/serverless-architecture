@@ -39,9 +39,10 @@ import java.util.Queue;
 
 public class StateImpl implements State {
 
-    private Queue<String> hosts = new LinkedList<>();
+    private Queue<OSVInstance> hosts = new LinkedList<>();
     private InstanceStates state;
     private String domain;
+    //ex-func.org
 
     public StateImpl() {
     }
@@ -54,16 +55,16 @@ public class StateImpl implements State {
         this.state = state;
     }
 
-    public Queue<String> getHosts() {
+    public Queue<OSVInstance> getOSVInstance() {
 
         return hosts;
     }
 
-    public void pushHost(String host) {
-        hosts.add(host);
+    public void pushOSVInstance(OSVInstance instance) {
+        hosts.add(instance);
     }
 
-    public String pullHost() {
+    public OSVInstance pullHost() {
         return hosts.poll();
     }
 

@@ -128,44 +128,41 @@ public class EtcdUtil {
 //        System.out.println(txnResponse.getGetResponses());
     }
 
-//    public static void main(String[] args) throws ExecutionException, InterruptedException {
-//        Watch watch = null;
-//        Watch.Watcher watcher = null;
-//
-//        try {
-//            watch = client.getWatchClient();
-//            watcher = watch.watch(ByteSequence.fromString("aaa"));
-//
-//            for (int i = 0; i < 5; i++) {
-//                WatchResponse response = watcher.listen();
-//
-//                for (WatchEvent event : response.getEvents()) {
-//
-//                    System.out.println(event.getEventType());
-//                    System.out.println(Optional.ofNullable(event.getKeyValue().getKey())
-//                            .map(ByteSequence::toStringUtf8)
-//                            .orElse(""));
-//                    System.out.println(Optional.ofNullable(event.getKeyValue().getValue())
-//                            .map(ByteSequence::toStringUtf8)
-//                            .orElse(""));
-//
-//                }
-//            }
-//        } catch (Exception e) {
-//            if (watcher != null) {
-//                watcher.close();
-//            }
-//
-//            if (watch != null) {
-//                watch.close();
-//            }
-//
-//            if (client != null) {
-//                client.close();
-//            }
-//        }
-//
-//    }
-//
+    public static String setWatcher(String key) {
+        Watch watch = null;
+        Watch.Watcher watcher = null;
+        String result=null;
+        try {
+            watch = client.getWatchClient();
+            watcher = watch.watch(ByteSequence.fromString(key));
+            WatchResponse response = watcher.listen();
+            WatchEvent event = response.getEvents().get(0);
+            logger.info("Watcher event for key: " + key + " action: " + event.getEventType());
+            result = Optional.ofNullable(event.getKeyValue().getValue())
+                    .map(ByteSequence::toStringUtf8)
+                    .orElse("");
+
+
+        } catch (Exception e) {
+            if (watcher != null) {
+                watcher.close();
+            }
+
+            if (watch != null) {
+                watch.close();
+            }
+
+            if (client != null) {
+                client.close();
+            }
+        } finally {
+            watcher.close();
+            watch.close();
+        }
+        return result;
+    }
+
+
+
 
 }

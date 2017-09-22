@@ -32,6 +32,7 @@ public class HandleScaling implements Runnable {
 
     @Override
     public void run() {
+
         logger.info("scaled");
     }
 }

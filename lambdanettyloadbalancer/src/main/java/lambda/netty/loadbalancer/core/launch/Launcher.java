@@ -19,22 +19,26 @@
 
 package lambda.netty.loadbalancer.core.launch;
 
-import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.http.HttpRequestEncoder;
 import lambda.netty.loadbalancer.core.ConfigConstants;
 import lambda.netty.loadbalancer.core.Server;
-import lambda.netty.loadbalancer.core.SysService.SysServiceConnection;
-import lambda.netty.loadbalancer.core.SysService.SysServiceHandlersInit;
+import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
+import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
+import lambda.netty.loadbalancer.core.loadbalance.StateImplJsonHelp;
+import lambda.netty.loadbalancer.core.loadbalance.statemodels.InstanceStates;
+import lambda.netty.loadbalancer.core.loadbalance.statemodels.OSVInstance;
+import lambda.netty.loadbalancer.core.loadbalance.statemodels.State;
+import lambda.netty.loadbalancer.core.loadbalance.statemodels.StateImpl;
 import lambda.netty.loadbalancer.core.scalability.ScalabilityManager;
 import org.apache.commons.configuration2.XMLConfiguration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.apache.log4j.Logger;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -99,16 +103,19 @@ public class Launcher {
         return xmlConfiguration.getLong(s);
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, EtcdClientException {
 
-//        State  state = new StateImpl();
-//        state.pushHost("127.0.0.1:8082");
+//        State state = new StateImpl();
+//        OSVInstance osvInstance = new OSVInstance();
+//        osvInstance.setHost("127.0.0.1:8082");
+//        osvInstance.setUuid(new UUID(1,1));
+//        state.pushOSVInstance(osvInstance);
 //        state.setState(InstanceStates.DOWN);
-//        state.setDomain("maanadev.org");
+//        state.setDomain("localhost");
 //
 //        System.out.println(StateImplJsonHelp.toString(state));
 //        try {
-////            EtcdUtil.putValue("localhost",StateImplJsonHelp.toString(state)).get();
+//            EtcdUtil.putValue("localhost",StateImplJsonHelp.toString(state)).get();
 //            System.out.println(EtcdUtil.getValue("localhost").get().getKvs().get(0).getValue().toString(StandardCharsets.UTF_8));
 //        } catch (EtcdClientException e) {
 //            e.printStackTrace();
@@ -117,7 +124,7 @@ public class Launcher {
 //        } catch (ExecutionException e) {
 //            e.printStackTrace();
 //        }
-
+//
         try {
             ConfigLogger.printFields();
         } catch (Exception e) {
