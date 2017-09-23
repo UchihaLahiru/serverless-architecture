@@ -45,9 +45,9 @@ import java.util.concurrent.TimeoutException;
 
 public final class HttpUploadClient {
 
-    static final String BASE_URL = System.getProperty("baseUrl", "http://127.0.0.1:8080/file");
+    static final String BASE_URL = System.getProperty("baseUrl", "http://127.0.0.1:8084/file");
 
-    public  static boolean uploadFileAsMultiPart(File file) throws Exception {
+    public  static boolean uploadFileAsMultiPart(File file, List<Entry<String, String>> attributes) throws Exception {
 
 
         URI uriSimple = new URI(BASE_URL);
@@ -106,7 +106,7 @@ public final class HttpUploadClient {
             }
 
             // Simple Post form: factory used for big attributes
-            List<InterfaceHttpData> bodylist = buildBody(uriSimple, file, factory, headers);
+            List<InterfaceHttpData> bodylist = buildBody(uriSimple, file, factory, attributes);
             if (bodylist == null) {
                 factory.cleanAllHttpData();
                 return false;
@@ -174,7 +174,7 @@ public final class HttpUploadClient {
         // add Form attribute
 
       for (Entry<String,String> item:attributes){
-
+          System.out.println(item.getKey());
           bodyRequestEncoder.addBodyAttribute(item.getKey(),item.getValue());
       }
 

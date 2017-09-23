@@ -21,6 +21,10 @@ package core.utilities;
 
 
 import java.io.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static core.utilities.FileType.*;
 
@@ -35,7 +39,7 @@ public class HTTPFileUpload  {
 
 
 
-    public static String uploadFile(FileType fileType, File file) throws IOException {
+    public static String uploadFile(FileType fileType, File file, List<Map.Entry<String, String>> attributes) throws IOException {
         if (!file.isFile()) {
             return "Cannot find the file !";
         }
@@ -46,7 +50,7 @@ public class HTTPFileUpload  {
                     return FILE_TYPE_IS_NOT_COMPATIBLE;
                 }
                 try {
-                     result = HttpUploadClient.uploadFileAsMultiPart(file);
+                     result = HttpUploadClient.uploadFileAsMultiPart(file,attributes);
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -85,6 +89,9 @@ public class HTTPFileUpload  {
     }
 
     public static void main(String[] args) throws IOException {
-        HTTPFileUpload.uploadFile(JAVA, new File("/Users/maanadev/Projects/uni/serverless_architecture/lambdacli/target/lambda-cli-1.0-SNAPSHOT.jar"));
+        List<Map.Entry<String, String>> attributes = new ArrayList<>();
+
+        attributes.add(new AbstractMap.SimpleEntry<String, String>("testkey","testValue"));
+        System.out.println(HTTPFileUpload.uploadFile(JAVA, new File("/Users/maanadev/Projects/uni/serverless-architecture/lambdacli/target/lambda-cli-1.0-SNAPSHOT.jar"),attributes ));
     }
 }
