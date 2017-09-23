@@ -37,6 +37,7 @@ public class LbImplement implements LoadBalancerInteract {
     @Override
     public String startFunction(String domain,String instanceID) {
         String ipaddress = null;
+        String host = null;
         boolean test = false;
         int count=0;
         this.serverLaunch.startOSVinstance(instanceID);
@@ -57,7 +58,7 @@ public class LbImplement implements LoadBalancerInteract {
         if(test){
             //write to etcd
             try {
-                this.updateEtcd(domain,InstanceStates.RUNNING,ipaddress);
+                host = this.updateEtcd(domain,InstanceStates.RUNNING,ipaddress);
             } catch (EtcdClientException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -67,12 +68,12 @@ public class LbImplement implements LoadBalancerInteract {
             }
             //notify lb
         }
-        return ipaddress;
+        return host;
 
     }
 
 
-    private void updateEtcd(String domainName, InstanceStates state, String ipaddress) throws EtcdClientException,ExecutionException,InterruptedException {
+    private String updateEtcd(String domainName, InstanceStates state, String ipaddress) throws EtcdClientException,ExecutionException,InterruptedException {
         CompletableFuture<GetResponse> res = EtcdUtil.getValue(domainName);
         GetResponse resjson = res.get();
         String val = String.valueOf(resjson.getKvs().get(0).getValue().toString(StandardCharsets.UTF_8));
@@ -87,5 +88,6 @@ public class LbImplement implements LoadBalancerInteract {
         //write back to etcd
         EtcdUtil.putValue(domainName,StateImplJsonHelp.toString(stateImpl));
 
+        return remoteHost.getHost();
     }
 }

@@ -76,5 +76,8 @@
         <query_time>500</query_time>
     </scalability>
 
+    <services>
+        <osv_port>4002</osv_port>
+    </services>
 
 </configuration>

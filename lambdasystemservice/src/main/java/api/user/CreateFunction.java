@@ -15,11 +15,10 @@ import org.openstack4j.api.OSClient;
 import transport.http.server.RestLogic;
 import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
 import user.UserCallImplement;
-
 /**
- * Created by deshan on 9/23/17.
+ * Created by deshan on 9/24/17.
  */
-public class ListFunction extends RestLogic{
+public class CreateFunction extends RestLogic {
     @Override
     public FullHttpResponse process(FullHttpRequest fullHttpRequest){
         OSClient.OSClientV2 os = OpenstackAdminConnection.getOpenstackAdminConnection().getOSclient();
@@ -28,5 +27,4 @@ public class ListFunction extends RestLogic{
 
         return null;
     }
-
 }
