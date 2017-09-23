@@ -17,7 +17,7 @@
  * under the License.
  */
 
-package api;
+package api.loadbalance;
 
 import com.coreos.jetcd.kv.GetResponse;
 import compute.LbImplement;

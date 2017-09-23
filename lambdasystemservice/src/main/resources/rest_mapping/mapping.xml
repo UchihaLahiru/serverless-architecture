@@ -40,7 +40,7 @@
 
     <!--#################################REST LOGIC REGISTRATION##############################################################-->
     <!-- Define the logic -->
-    <bean id="instanceManager" class="api.InstanceStateManager">
+    <bean id="instanceManager" class="api.loadbalance.InstanceStateManager">
         <property name="path" value="/state"></property>
     </bean>
     <!-- Bind the logic to a Subscriber-->
