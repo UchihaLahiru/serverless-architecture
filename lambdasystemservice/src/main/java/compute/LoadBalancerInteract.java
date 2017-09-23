@@ -1,5 +1,6 @@
 package compute;
 
+
 import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
 
 /**
@@ -7,5 +8,5 @@ import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
  */
 public interface LoadBalancerInteract {
     //return IP address
-    boolean startFunction(String domainName) throws EtcdClientException;
+    String startFunction(String domain, String instanceID)throws EtcdClientException;
 }
