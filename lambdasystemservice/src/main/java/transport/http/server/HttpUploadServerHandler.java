@@ -30,12 +30,19 @@ import io.netty.handler.codec.http.multipart.InterfaceHttpData.HttpDataType;
 import io.netty.util.CharsetUtil;
 import launch.ConfigConstantKeys;
 import launch.Launcher;
+import object_storage.ObjectStorage;
+import object_storage.ObjectStorageImpl;
 import org.apache.log4j.Logger;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 
+/**
+ * This handler is handling the file upload.
+ * If the request is for PREFIX and is multipart then next handlers in the channel are not executed
+ * User data can be send via body attributes in the multipart request and need to handle database/VM building here
+ */
 public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObject> {
 
     private static final Logger logger = Logger.getLogger(HttpUploadServerHandler.class);
@@ -74,7 +81,6 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
         if (isFileUpload) {
             if (msg instanceof HttpRequest) {
                 HttpRequest request = this.request = (HttpRequest) msg;
-
                 URI uri = new URI(request.uri());
                 if (!(uri.getPath().startsWith(PREFIX) && HttpPostRequestDecoder.isMultipart(request))) {
                     notAFileUpload(ctx, msg);
@@ -191,16 +197,15 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
 
     private void writeHttpData(InterfaceHttpData data) {
         if (data.getHttpDataType() == HttpDataType.Attribute) {
-//            Attribute attribute = (Attribute) data;
-//            String value;
-//            try {
-//                value = attribute.getValue();
-//                System.out.println(value);
-//            } catch (IOException e1) {
-//                // Error while reading data from File, only print name and error
-//                e1.printStackTrace();
-//                return;
-//            }
+            Attribute attribute = (Attribute) data;
+            String value;
+            try {
+                value = attribute.getValue();
+            } catch (IOException e1) {
+                // Error while reading data from File, only print name and error
+                e1.printStackTrace();
+                return;
+            }
         } else {
             if (data.getHttpDataType() == HttpDataType.FileUpload) {
 
@@ -214,6 +219,14 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                         while (byteBuf.isReadable()) {
                             fileOutputStream.write(byteBuf.readByte());
                         }
+                        // Store user info mongodb
+
+
+
+                        // Upload function to Minion server
+                        ObjectStorage objectStorage = ObjectStorageImpl.getInstance();
+                        //need to come up with a bucket id and objname
+                        objectStorage.storeOBJ("test","maanadev",  fileUpload.getFilename());
                     } catch (IOException e) {
                         logger.error("Cannot write to the file", e);
                     } finally {
