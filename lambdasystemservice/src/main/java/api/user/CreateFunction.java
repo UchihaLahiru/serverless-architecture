@@ -30,10 +30,12 @@ public class CreateFunction extends RestLogic {
                 fullHttpRequest.headers().get("user")
         );
 
+
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-                status? HttpResponseStatus.OK:HttpResponseStatus.SERVICE_UNAVAILABLE, null);
+                status? HttpResponseStatus.OK:HttpResponseStatus.EXPECTATION_FAILED, null);
         response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
-        response.headers().set("domain", fullHttpRequest.headers().get("domain"));
+        response.headers().set("user", fullHttpRequest.headers().get("user"));
+        response.headers().set("domain",modal.getDomainName());
 
 
         return response;

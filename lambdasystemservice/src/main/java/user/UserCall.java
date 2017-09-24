@@ -19,6 +19,8 @@
 
 package user;
 
+import java.util.ArrayList;
+
 /**
  * Created by deshan on 8/24/17.
  */
@@ -39,13 +41,13 @@ public interface UserCall {
      * @param functionName : the name of the function that is going to be delete
      * @param user  : the user
      */
-    void deleteFunction(String functionName, String user);
+    boolean deleteFunction(String functionName, String user);
 
     /**
      * list the all functions of a user
      * @param user
      */
-    void listFunction(String user);
+    ArrayList<String> listFunction(String user);
 
     /**
      * invoke a function
@@ -61,7 +63,7 @@ public interface UserCall {
      * @param functionName
      * @param file : path of the object storage
      */
-    void updateFunction(String functionName, String file);
+    boolean updateFunction(String functionName, String file);
 
 //    refer openwhisk ibm
 
