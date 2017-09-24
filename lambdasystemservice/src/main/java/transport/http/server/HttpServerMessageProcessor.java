@@ -76,6 +76,7 @@ public class HttpServerMessageProcessor {
                 response = messageObserver.notifySubscriber(uri.getPath(), fullHttpRequest);
             }
             channelHandlerContext.writeAndFlush(response);
+            channelHandlerContext.close();
         });
 
     }
