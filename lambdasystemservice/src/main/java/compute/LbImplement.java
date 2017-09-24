@@ -2,7 +2,7 @@ package compute;
 
 import availability.UserPing;
 import com.coreos.jetcd.kv.GetResponse;
-import connections.OpenstackAdminConnection;
+import connections.openstack.OpenstackAdminConnection;
 import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
 import lambda.netty.loadbalancer.core.loadbalance.StateImplJsonHelp;
 import lambda.netty.loadbalancer.core.loadbalance.statemodels.InstanceStates;
@@ -11,7 +11,6 @@ import lambda.netty.loadbalancer.core.loadbalance.statemodels.State;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.compute.Server;
 import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
-import com.coreos.jetcd.kv.PutResponse;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;

@@ -19,7 +19,7 @@
 
 package availability;
 
-import connections.OpenstackAdminConnection;
+import connections.openstack.OpenstackAdminConnection;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.identity.v2.User;
 
