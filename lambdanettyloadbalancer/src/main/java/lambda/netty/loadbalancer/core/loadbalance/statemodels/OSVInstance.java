@@ -1,10 +1,13 @@
 package lambda.netty.loadbalancer.core.loadbalance.statemodels;
 
+import lambda.netty.loadbalancer.core.launch.Launcher;
+
 import java.util.UUID;
 
 public class OSVInstance {
     UUID uuid;
     String ipaddress;
+    //host = ip + port
     String host;
 
     public UUID getUuid() {
