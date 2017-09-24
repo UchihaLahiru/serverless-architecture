@@ -20,7 +20,7 @@
 package user;
 
 import compute.ServerLaunchImplement;
-import connections.OpenstackAdminConnection;
+import connections.openstack.OpenstackAdminConnection;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.compute.Server;
 
@@ -114,14 +114,22 @@ public class UserCallImplement implements UserCall {
     }
 
 
-    // get imageID for selected language environment
+    /**
+     * get the image for required language environmet
+     * @param languageEnv - language environment
+     * @return uuid of the image
+     */
     private String getImageID(String languageEnv) {
         // get data from openstack base
         return "797cb7f8-543a-4a31-b5b2-58841321b25a";
     }
 
 
-    // get netowork assigned for the user
+    /**
+     * get networks assigned for selected user
+     * @param user - user in openstack
+     * @return list of uuid of networks
+     */
     private ArrayList<String> getNetworks(String user) {
         ArrayList<String> list = new ArrayList<>();
         // get if network for the user
@@ -131,13 +139,21 @@ public class UserCallImplement implements UserCall {
     }
 
 
-    // get the instance uuid from etcd
+    /**
+     * get uuid of the instance from domain name
+     * @param serviceName - name of the function
+     * @return  uuid of the osv instance
+     */
     private String getInstanceID(String serviceName) {
         // get data from etcd
         return null;
     }
 
-    // check name is unique
+
+    /**
+     * check function name is available for creation from the database
+     * @param name - function name
+     */
     private boolean isNameAvailable(String name) {
         // check in etcd
         return true;

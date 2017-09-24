@@ -29,22 +29,47 @@ import java.util.List;
  */
 public interface ServerLaunch {
 
-    //    create a osv instance in the cluster
+    /**
+     * create a osv instance in openstack
+     * @param serviceName - name of the service/function
+     * @param imageID - the image uuid to create new instane
+     * @param network - the uuid of each network that needed to be connect
+     * @return - uuid of the created instance
+     */
     Server createOSVInstance(String serviceName, String imageID, List<String> network);
 
-    //    start the created osv instance
+    /**
+     * start instance cold start
+     * @param serviceName - uuid of the instance
+     * @return
+     */
     ActionResponse startOSVinstance(String serviceName);
 
-    //    start the created osv instance
+    /**
+     * shutdown a osv instance
+     * @param serviceName - uuid of the instance
+     * @return
+     */
     ActionResponse stopOSVinstance(String serviceName);
 
-    //    destroy existing osv instance
+    /**
+     * destroy a osv instance
+     * @param serviceName - uuid of the instance
+     */
     void destroyOSVInstance(String serviceName);
 
-    //    suspend a osv instance
+    /**
+     *
+     * @param serviceName - suspend a instance
+     * @return
+     */
     ActionResponse pauseOSVInstance(String serviceName);
 
-    //    resume suspended osv instance
+    /**
+     * return from suspend state
+     * @param serviceName
+     * @return
+     */
     ActionResponse resumeOSVInstance(String serviceName);
 
 
@@ -56,6 +81,11 @@ public interface ServerLaunch {
     void createSubnet();
 */
 
-    //    port a funcion file to the osv instance
+    /**
+     *
+     * @param filelocation - location of the file
+     * @param serverId  - server uuid
+     * @return
+     */
     boolean portFunctionCode(String filelocation, String serverId);
 }

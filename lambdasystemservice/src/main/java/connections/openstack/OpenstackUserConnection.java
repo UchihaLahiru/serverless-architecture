@@ -17,44 +17,34 @@
  * under the License.
  */
 
-package connections;
+package connections.openstack;
 
-/**
- * Created by deshan on 7/19/17.
- */
-
-import launch.Launcher;
-import org.openstack4j.api.OSClient.OSClientV2;
+import org.openstack4j.api.OSClient;
+import org.openstack4j.api.exceptions.AuthenticationException;
 import org.openstack4j.openstack.OSFactory;
 
 
-public class OpenstackAdminConnection {
-    private static OpenstackAdminConnection openstackAdminConnection = null;
-    private OSClientV2 os;
+/**
+ * Created by deshan on 7/26/17.
+ */
+public class OpenstackUserConnection {
+    private OSClient.OSClientV2 os;
 
-    protected OpenstackAdminConnection(String connectionEndpoint, String connectionPassword) {
-
+    protected OpenstackUserConnection(String connectionEndpoint, String connectionPassword, String user) {
         try {
             os = OSFactory.builderV2()
                     .endpoint(connectionEndpoint)
-                    .credentials("admin", connectionPassword)
-                    .tenantName("admin")
+                    .credentials(user, connectionPassword)
+                    .tenantName(user)                       //check the tenant name
                     .authenticate();
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
             e.printStackTrace();
         }
-        ;
+
+
     }
 
-    public static OpenstackAdminConnection getOpenstackAdminConnection() {
-        if (openstackAdminConnection == null)
-            openstackAdminConnection = new OpenstackAdminConnection(Launcher.getString("connections.openstack.adminConnection"), Launcher.getString("connections.openstack.password"));
-        ;
-        return openstackAdminConnection;
-    }
-
-    public OSClientV2 getOSclient() {
+    public OSClient.OSClientV2 getOSclient() {
         return os;
     }
-
 }
