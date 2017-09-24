@@ -1,30 +1,41 @@
 package api.user;
 
-import com.coreos.jetcd.kv.GetResponse;
-import compute.LbImplement;
-import connections.OpenstackAdminConnection;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
-import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
-import lambda.netty.loadbalancer.core.loadbalance.StateImplJsonHelp;
-import lambda.netty.loadbalancer.core.loadbalance.statemodels.OSVInstance;
-import lambda.netty.loadbalancer.core.loadbalance.statemodels.State;
-import org.openstack4j.api.OSClient;
 import transport.http.server.RestLogic;
-import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
 import user.UserCallImplement;
+import user.request.JsonHelper;
+import user.request.models.CreateFunctionModal;
+
+
 /**
  * Created by deshan on 9/24/17.
  */
 public class CreateFunction extends RestLogic {
     @Override
     public FullHttpResponse process(FullHttpRequest fullHttpRequest){
-        OSClient.OSClientV2 os = OpenstackAdminConnection.getOpenstackAdminConnection().getOSclient();
-        UserCallImplement userFunctionData = new UserCallImplement();
+        boolean status = false;
+
+        ByteBuf buf = fullHttpRequest.content();
+        String content = buf.toString(CharsetUtil.UTF_8);
+        CreateFunctionModal modal = new JsonHelper<CreateFunctionModal>(CreateFunctionModal.class).jsonToObj(content);
 
 
-        return null;
+        UserCallImplement call = new UserCallImplement();
+        status = call.createFunction(
+                modal.getDomainName(),
+                modal.getFilePath(),
+                modal.getLang(),
+                fullHttpRequest.headers().get("user")
+        );
+
+        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
+                status? HttpResponseStatus.OK:HttpResponseStatus.SERVICE_UNAVAILABLE, null);
+        response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "application/json");
+        response.headers().set("domain", fullHttpRequest.headers().get("domain"));
+
+
+        return response;
     }
 }

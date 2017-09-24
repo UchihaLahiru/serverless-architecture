@@ -41,7 +41,7 @@ public class UserCallImplement implements UserCall {
     }
 
     @Override
-    public void createFunction(String functionName, String file, String language, String user) {
+    public boolean createFunction(String functionName, String file, String language, String user) {
 
 
         // check the user
@@ -58,10 +58,14 @@ public class UserCallImplement implements UserCall {
             Server server = this.serverlaunch.createOSVInstance(functionName,
                     this.getImageID("java"), this.getNetworks(user));
 
+
             // upload code
 
             // write data to etcd
+
+            if(server!=null) return true;
         }
+        return false;
 
     }
 

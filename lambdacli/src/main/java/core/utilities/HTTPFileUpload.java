@@ -92,6 +92,6 @@ public class HTTPFileUpload  {
         List<Map.Entry<String, String>> attributes = new ArrayList<>();
 
         attributes.add(new AbstractMap.SimpleEntry<String, String>("testkey","testValue"));
-        System.out.println(HTTPFileUpload.uploadFile(JAVA, new File("/Users/maanadev/Projects/uni/serverless-architecture/lambdacli/target/lambda-cli-1.0-SNAPSHOT.jar"),attributes ));
+        System.out.println(HTTPFileUpload.uploadFile(PYTHON, new File("/home/deshan/main.py"),attributes ));
     }
 }

@@ -23,14 +23,44 @@ package user;
  * Created by deshan on 8/24/17.
  */
 public interface UserCall {
-    void createFunction(String functionName, String file, String language, String user);
+    /**
+     * create a new function
+     * @param functionName : the name of the function that is going to be created
+     * @param file  : file path in the object storage and name
+     * @param language  : the languaage environment
+     * @param user  : the user who is creating function
+     * @return
+     */
+    boolean createFunction(String functionName, String file, String language, String user);
 
+
+    /**
+     * delete a existing function
+     * @param functionName : the name of the function that is going to be delete
+     * @param user  : the user
+     */
     void deleteFunction(String functionName, String user);
 
+    /**
+     * list the all functions of a user
+     * @param user
+     */
     void listFunction(String user);
 
+    /**
+     * invoke a function
+     * @param functionName : name of the invoking function
+     * @param blocking  : blocking or non blocking state
+     * @param args  : argumaents that should pass to the function
+     */
     void invokeFunction(String functionName, boolean blocking, String[] args);
 
+
+    /**
+     * update a existing funtion with new script
+     * @param functionName
+     * @param file : path of the object storage
+     */
     void updateFunction(String functionName, String file);
 
 //    refer openwhisk ibm
