@@ -41,7 +41,7 @@ public class UserCallImplement implements UserCall {
     }
 
     @Override
-    public void createFunction(String functionName, String file, String language, String user) {
+    public boolean createFunction(String functionName, String file, String language, String user) {
 
 
         // check the user
@@ -58,16 +58,20 @@ public class UserCallImplement implements UserCall {
             Server server = this.serverlaunch.createOSVInstance(functionName,
                     this.getImageID("java"), this.getNetworks(user));
 
+
             // upload code
 
             // write data to etcd
+
+            if(server!=null) return true;
         }
+        return false;
 
     }
 
 
     @Override
-    public void deleteFunction(String functionName, String user) {
+    public boolean deleteFunction(String functionName, String user) {
         // check the user
         if (user.equals("admin")) {
             this.os = OpenstackAdminConnection.getOpenstackAdminConnection().getOSclient();
@@ -79,12 +83,12 @@ public class UserCallImplement implements UserCall {
         this.serverlaunch.destroyOSVInstance(getInstanceID(functionName));
 
         // remove data from etcd
-
+        return true;
     }
 
 
     @Override
-    public void listFunction(String user) {
+    public ArrayList<String> listFunction(String user) {
         // check the user
         if (user.equals("admin")) {
             this.os = OpenstackAdminConnection.getOpenstackAdminConnection().getOSclient();
@@ -92,6 +96,8 @@ public class UserCallImplement implements UserCall {
             // for user
 //            this.os = OpenstackUserConnection("")
         }
+        //get data from db and return
+        return null;
 
         //get functions for the user
     }
@@ -103,8 +109,8 @@ public class UserCallImplement implements UserCall {
 
 
     @Override
-    public void updateFunction(String functionName, String file) {
-
+    public boolean updateFunction(String functionName, String file) {
+        return false;
     }
 
 

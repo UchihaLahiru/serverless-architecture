@@ -77,6 +77,7 @@ public class InstanceStateManager extends RestLogic {
         response.headers().set("remoteIP", remoteIp);
         response.headers().set("domain", fullHttpRequest.headers().get("domain"));
         response.headers().set(HttpHeaders.Names.CONTENT_LENGTH, content.readableBytes());
+
         return response;
     }
 }

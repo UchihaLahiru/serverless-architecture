@@ -58,4 +58,7 @@ final public class ConfigConstants {
     public static final String CONFIG_SCALABILITY_THREAD_COUNT = "scalability.thread-count";
     public static final String CONFIG_SCALABILITY_QUERY_TIME = "scalability.query_time";
     public static final String CONFIG_SCALABILITY_ENABLED = "scalability.enabled";
+
+    //services
+    public static final String CONFIG_SERVICES_DEFAULT_PORT = "services.osv_port";
 }

@@ -35,6 +35,73 @@
             <ref bean="restAction"></ref>
         </property>
     </bean>
+
+    <!--create function-->
+    <!-- Define the logic -->
+    <bean id="create_function" class="api.user.CreateFunction">
+        <property name="path" value="/user/create_function"></property>
+    </bean>
+    <!-- Bind the logic to a Subscriber-->
+    <bean id="HttpMSGSubscriber_create" class="transport.http.server.impl.HttpMSGSubscriber">
+        <property name="action">
+            <ref bean="create_function"></ref>
+        </property>
+    </bean>
+
+
+    <!--delete function-->
+    <!-- Define the logic -->
+    <bean id="delete_function" class="api.user.DeleteFunction">
+        <property name="path" value="/user/delete_function"></property>
+    </bean>
+    <!-- Bind the logic to a Subscriber-->
+    <bean id="HttpMSGSubscriber_delete" class="transport.http.server.impl.HttpMSGSubscriber">
+        <property name="action">
+            <ref bean="delete_function"></ref>
+        </property>
+    </bean>
+
+
+
+    <!--invoke function-->
+    <!-- Define the logic -->
+    <bean id="invoke_function" class="api.user.InvokeFunction">
+        <property name="path" value="/user/invoke_function"></property>
+    </bean>
+    <!-- Bind the logic to a Subscriber-->
+    <bean id="HttpMSGSubscriber_invoke" class="transport.http.server.impl.HttpMSGSubscriber">
+        <property name="action">
+            <ref bean="invoke_function"></ref>
+        </property>
+    </bean>
+
+
+    <!--list function-->
+    <!-- Define the logic -->
+    <bean id="list_function" class="api.user.ListFunction">
+        <property name="path" value="/user/list_function"></property>
+    </bean>
+    <!-- Bind the logic to a Subscriber-->
+    <bean id="HttpMSGSubscriber_list" class="transport.http.server.impl.HttpMSGSubscriber">
+        <property name="action">
+            <ref bean="list_function"></ref>
+        </property>
+    </bean>
+
+
+    <!--update function-->
+    <!-- Define the logic -->
+    <bean id="update_function" class="api.user.UpdateFunction">
+        <property name="path" value="/user/update_function"></property>
+    </bean>
+    <!-- Bind the logic to a Subscriber-->
+    <bean id="HttpMSGSubscriber_update" class="transport.http.server.impl.HttpMSGSubscriber">
+        <property name="action">
+            <ref bean="update_function"></ref>
+        </property>
+    </bean>
+
+
     <!--###############################################################################################-->
 
 
