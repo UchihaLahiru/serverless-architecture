@@ -110,7 +110,7 @@ public class Launcher {
 //        osvInstance.setHost("127.0.0.1:8082");
 //        osvInstance.setUuid(new UUID(1,1));
 //        state.pushOSVInstance(osvInstance);
-//        state.setState(InstanceStates.DOWN);
+//        state.setState(InstanceStates.RUNNING);
 //        state.setDomain("localhost");
 //
 //        System.out.println(StateImplJsonHelp.toString(state));
@@ -124,7 +124,7 @@ public class Launcher {
 //        } catch (ExecutionException e) {
 //            e.printStackTrace();
 //        }
-//
+
         try {
             ConfigLogger.printFields();
         } catch (Exception e) {

@@ -69,7 +69,7 @@ public class InstanceStateManager extends RestLogic {
         remoteIp="127.0.0.1:"+8082;
 
         //implementation of instance spawning
-
+        System.out.println(remoteIp);
         ByteBuf content = Unpooled.copiedBuffer("Hello World.", CharsetUtil.UTF_8);
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
                 remoteIp!=null? HttpResponseStatus.OK:HttpResponseStatus.SERVICE_UNAVAILABLE, content);
