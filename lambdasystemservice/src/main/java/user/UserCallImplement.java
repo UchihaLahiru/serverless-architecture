@@ -20,6 +20,7 @@
 package user;
 
 import com.coreos.jetcd.kv.GetResponse;
+import com.maanadev.mongo.MongodbImplement;
 import compute.ServerLaunchImplement;
 import connections.openstack.OpenstackAdminConnection;
 import lambda.netty.loadbalancer.core.etcd.EtcdClientException;
@@ -188,6 +189,7 @@ public class UserCallImplement implements UserCall {
      */
     private boolean isNameAvailable(String name) {
         // check in db
+//        MongodbImplement <
         return true;
 
     }

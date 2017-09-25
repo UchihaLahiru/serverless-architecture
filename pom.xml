@@ -12,7 +12,6 @@
         <module>lambdasystemservice</module>
         <module>lambdacli</module>
         <module>dummyservice</module>
-        <module>dummyservice</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -25,6 +24,13 @@
         <jetcd.version>0.1.0-SNAPSHOT</jetcd.version>
         <spring.version>3.0.5.RELEASE</spring.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>Eclipse Paho Repo</id>
+            <url>https://repo.eclipse.org/content/repositories/paho-releases/</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>

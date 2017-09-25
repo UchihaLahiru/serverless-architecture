@@ -11,13 +11,13 @@
 
     <artifactId>dummy-service</artifactId>
 
-
     <dependencies>
         <dependency>
-            <groupId>org.fusesource.mqtt-client</groupId>
-            <artifactId>mqtt-client</artifactId>
-            <version>1.12</version>
+            <groupId>org.eclipse.paho</groupId>
+            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+            <version>1.0.2</version>
         </dependency>
     </dependencies>
+
 
 </project>
