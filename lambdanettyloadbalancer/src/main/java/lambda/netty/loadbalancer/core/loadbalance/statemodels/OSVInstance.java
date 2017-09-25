@@ -1,13 +1,13 @@
 package lambda.netty.loadbalancer.core.loadbalance.statemodels;
 
-import lambda.netty.loadbalancer.core.ConfigConstants;
 import lambda.netty.loadbalancer.core.launch.Launcher;
-
+import lambda.netty.loadbalancer.core.ConfigConstants;
 import java.util.UUID;
 
 public class OSVInstance {
     UUID uuid;
     String ipaddress;
+    String host;
     static String port = Launcher.getString(ConfigConstants.CONFIG_SERVICES_DEFAULT_PORT );
 
     public UUID getUuid() {
@@ -23,7 +23,7 @@ public class OSVInstance {
     public void setIpaddress(String ipaddress) { this.ipaddress = ipaddress;}
 
     public String getHost() {
-        return this.ipaddress +":"+ OSVInstance.port;
+        return this.ipaddress +":"+ port;
     }
 
 }

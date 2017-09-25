@@ -89,6 +89,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
 
                 if (stateImpl.getState() == InstanceStates.DOWN) {
                     logger.info("No instance is up ! informing Sys-service ");
+                    // user event will be triggered by syshostresolver backend handler with a proxyevent
                     requestIp();
                 } else if (stateImpl.getState() == InstanceStates.STARTING) {
                     String state = EtcdUtil.setWatcher(instanceID);

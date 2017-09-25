@@ -9,9 +9,6 @@ import user.request.JsonHelper;
 import user.request.models.CreateFunctionModal;
 
 
-/**
- * Created by deshan on 9/24/17.
- */
 public class CreateFunction extends RestLogic {
     @Override
     public FullHttpResponse process(FullHttpRequest fullHttpRequest){

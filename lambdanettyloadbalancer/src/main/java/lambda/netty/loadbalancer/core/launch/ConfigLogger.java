@@ -32,12 +32,14 @@ public class ConfigLogger {
     final private static String SYS_SERVICE = "<========== Sys-Service configurations ========> ";
     final private static String ETCD = "<========== ETCD configurations ========>";
     final private static String SCALABILITY = "<========== Scalability configurations ========> ";
+    final private static String SERVICES = "<========== Service configurations ========> ";
 
     final private static String L_REGEX = "CONFIGLAUNCHER";
     final private static String T_REGEX = "CONFIGTRANSPORT";
     final private static String SY_REGEX = "CONFIGSYS";
     final private static String E_REGEX = "CONFIGETCD";
     final private static String SC_REGEX = "CONFIGSCALABILITY";
+    final private static String SV_REGEX = "CONFIGSERVICES";
 
     public static void printFields() throws Exception {
         ConfigConstants configConstants = new ConfigConstants();
@@ -49,6 +51,7 @@ public class ConfigLogger {
         boolean syFirst = true;
         boolean eFirst = true;
         boolean scFirst = true;
+        boolean svFirst = true;
         Field[] fields = objClass.getFields();
 
         for (Field field : fields) {
@@ -58,48 +61,46 @@ public class ConfigLogger {
             Object value = field.get(configConstants);
             switch (regex) {
                 case L_REGEX: {
-                    if (lFirst) {
-                        logger.info(LAUNCHER);
-                        lFirst = false;
-                    }
+                    lFirst = isFirstTime(lFirst, LAUNCHER);
                     printConfig(value);
                     break;
                 }
                 case T_REGEX: {
-                    if (tFirst) {
-                        logger.info(TRANSPORT);
-                        tFirst = false;
-                    }
+                    tFirst = isFirstTime(tFirst, TRANSPORT);
                     printConfig(value);
                     break;
                 }
                 case SY_REGEX: {
-                    if (syFirst) {
-                        logger.info(SYS_SERVICE);
-                        syFirst = false;
-                    }
+                    syFirst = isFirstTime(syFirst, SYS_SERVICE);
                     printConfig(value);
                     break;
                 }
                 case E_REGEX: {
-                    if (eFirst) {
-                        logger.info(ETCD);
-                        eFirst = false;
-                    }
+                    eFirst = isFirstTime(eFirst, ETCD);
                     printConfig(value);
                     break;
                 }
                 case SC_REGEX: {
-                    if (scFirst) {
-                        logger.info(ETCD);
-                        scFirst = false;
-                    }
+                    scFirst = isFirstTime(scFirst, SCALABILITY);
+                    printConfig(value);
+                    break;
+                }
+                case SV_REGEX: {
+                    svFirst = isFirstTime(svFirst, SERVICES);
                     printConfig(value);
                     break;
                 }
             }
 
         }
+    }
+
+    private static boolean isFirstTime(boolean firstTime, String quote) {
+        if (firstTime) {
+            logger.info(quote);
+            firstTime = false;
+        }
+        return firstTime;
     }
 
     private static void printConfig(Object value) {

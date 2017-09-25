@@ -46,27 +46,27 @@ public class InstanceStateManager extends RestLogic {
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-        try {
-            // get the uuid of starting instance
-            CompletableFuture<GetResponse> res = EtcdUtil.getValue(fullHttpRequest.headers().get("domain"));
-            GetResponse resjson = res.get();
-            String val = String.valueOf(resjson.getKvs().get(0).getValue().toString(StandardCharsets.UTF_8));
-            State stateImpl = StateImplJsonHelp.getObject(val);
-            OSVInstance remoteHost = stateImpl.getOSVInstance().peek();
+//        try {
+//            // get the uuid of starting instance
+//            CompletableFuture<GetResponse> res = EtcdUtil.getValue(fullHttpRequest.headers().get("domain"));
+//            GetResponse resjson = res.get();
+//            String val = String.valueOf(resjson.getKvs().get(0).getValue().toString(StandardCharsets.UTF_8));
+//            State stateImpl = StateImplJsonHelp.getObject(val);
+//            OSVInstance remoteHost = stateImpl.getOSVInstance().peek();
+//
+//            //get the remote Ip after spawning
+//            remoteIp = new LbImplement().startFunction(fullHttpRequest.headers().get("domain"),
+//                    remoteHost.getUuid().toString());
+//
+//        } catch (EtcdClientException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e){
+//            e.printStackTrace();
+//        } catch (ExecutionException e){
+//            e.printStackTrace();
+//        }
 
-            //get the remote Ip after spawning
-            remoteIp = new LbImplement().startFunction(fullHttpRequest.headers().get("domain"),
-                    remoteHost.getUuid().toString());
-
-        } catch (EtcdClientException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        } catch (ExecutionException e){
-            e.printStackTrace();
-        }
-
-
+        remoteIp="127.0.0.1:"+8082;
 
         //implementation of instance spawning
 

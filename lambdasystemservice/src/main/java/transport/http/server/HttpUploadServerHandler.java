@@ -117,6 +117,7 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
                     // example of reading only if at the end
                     if (chunk instanceof LastHttpContent) {
                         writeOkResponse(ctx.channel());
+
                         reset();
                     }
                 }
@@ -224,9 +225,9 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
 
 
                         // Upload function to Minion server
-                        ObjectStorage objectStorage = ObjectStorageImpl.getInstance();
-                        //need to come up with a bucket id and objname
-                        objectStorage.storeOBJ("test","maanadev",  fileUpload.getFilename());
+//                        ObjectStorage objectStorage = ObjectStorageImpl.getInstance();
+//                        //need to come up with a bucket id and objname
+//                        objectStorage.storeOBJ("test","maanadev",  fileUpload.getFilename());
                     } catch (IOException e) {
                         logger.error("Cannot write to the file", e);
                     } finally {
@@ -245,39 +246,6 @@ public class HttpUploadServerHandler extends SimpleChannelInboundHandler<HttpObj
     }
 
     private void writeOkResponse(Channel channel) {
-//        // Convert the response content to a ChannelBuffer.
-//        ByteBuf buf = copiedBuffer(responseContent.toString(), CharsetUtil.UTF_8);
-//        responseContent.setLength(0);
-//
-//        // Decide whether to close the connection or not.
-//        boolean close = request.headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
-//                || request.protocolVersion().equals(HttpVersion.HTTP_1_0)
-//                && !request.headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE, true);
-//
-//        // Build the response object.
-//        FullHttpResponse response = new DefaultFullHttpResponse(
-//                HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf);
-//        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
-//
-//        if (!close) {
-//            // There's no need to add 'Content-Length' header
-//            // if this is the last response.
-//            response.headers().setInt(HttpHeaderNames.CONTENT_LENGTH, buf.readableBytes());
-//        }
-//
-//        Set<Cookie> cookies;
-//        String value = request.headers().get(HttpHeaderNames.COOKIE);
-//        if (value == null) {
-//            cookies = Collections.emptySet();
-//        } else {
-//            cookies = ServerCookieDecoder.STRICT.decode(value);
-//        }
-//        if (!cookies.isEmpty()) {
-//            // Reset the cookies if necessary.
-//            for (Cookie cookie : cookies) {
-//                response.headers().add(HttpHeaderNames.SET_COOKIE, ServerCookieEncoder.STRICT.encode(cookie));
-//            }
-//        }
         sendResponse(channel, HttpResponseStatus.OK, "Done");
     }
 
