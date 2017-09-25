@@ -1,6 +1,6 @@
 language: java
 jdk: oraclejdk8
-berfore_script:
+before_install:
 - wget https://github.com/ThilinaManamgoda/Mongodb-Jongo-JAVA/archive/master.zip
 - unzip master.zip -d .
 - pushd Mongodb-Jongo-JAVA && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V && popd
