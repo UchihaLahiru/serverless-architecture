@@ -1,7 +1,8 @@
 language: java
 jdk: oraclejdk8
 before_install:
-- git clone git@github.com:ThilinaManamgoda/Mongodb-Jongo-JAVA.git
+- wget https://github.com/ThilinaManamgoda/Mongodb-Jongo-JAVA/archive/master.zip
+- unzip master.zip -d .
 - pushd Mongodb-Jongo-JAVA && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V && popd
 script: 
 - mvn test -B
