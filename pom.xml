@@ -12,6 +12,7 @@
         <module>lambdasystemservice</module>
         <module>lambdacli</module>
         <module>dummyservice</module>
+        <module>dummyservice</module>
     </modules>
     <packaging>pom</packaging>
 

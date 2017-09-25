@@ -27,6 +27,7 @@ import lambda.netty.loadbalancer.core.etcd.EtcdUtil;
 import lambda.netty.loadbalancer.core.loadbalance.StateImplJsonHelp;
 import lambda.netty.loadbalancer.core.loadbalance.statemodels.OSVInstance;
 import lambda.netty.loadbalancer.core.loadbalance.statemodels.State;
+import org.apache.log4j.Logger;
 import org.openstack4j.api.OSClient;
 import org.openstack4j.model.compute.Server;
 
@@ -42,11 +43,12 @@ public class UserCallImplement implements UserCall {
 
     OSClient.OSClientV2 os;
     ServerLaunchImplement serverlaunch;
-
+    static Logger log;
 
     public UserCallImplement() {
         this.serverlaunch = null;
         this.os = null;
+        log= Logger.getLogger(UserCallImplement.class.getName());
     }
 
     @Override
@@ -67,6 +69,8 @@ public class UserCallImplement implements UserCall {
             Server server = this.serverlaunch.createOSVInstance(functionName,
                     this.getImageID("java"), this.getNetworks(user));
 
+            log.info(functionName + " function instance created");
+
 
             // upload code
 
@@ -74,6 +78,7 @@ public class UserCallImplement implements UserCall {
 
             if(server!=null) return true;
         }
+        log.error(functionName+" function instance not created");
         return false;
 
     }
