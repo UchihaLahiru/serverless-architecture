@@ -1,12 +1,10 @@
 package db.modal;
 
-import org.jongo.marshall.jackson.oid.MongoId;
 
 import java.util.ArrayList;
 
 public class User {
     // this is little bit confusing key = id Mongo DB requirement
-    @MongoId
     private long key;
 
     String domain;

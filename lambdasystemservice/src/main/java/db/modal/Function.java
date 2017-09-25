@@ -1,12 +1,10 @@
 package db.modal;
 
-import org.jongo.marshall.jackson.oid.MongoId;
 
 /**
  * Created by deshan on 9/24/17.
  */
 public class Function {
-    @MongoId
     String domainName;
     String name;
     String bucket;
