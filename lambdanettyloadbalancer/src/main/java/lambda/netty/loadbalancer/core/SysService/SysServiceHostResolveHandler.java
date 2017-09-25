@@ -100,6 +100,7 @@ public class SysServiceHostResolveHandler extends ChannelInboundHandlerAdapter {
                     ctx.fireUserEventTriggered(proxyEvent);
                 } else if (stateImpl.getState() == InstanceStates.RUNNING) {
                     logger.info("These instances are up and running");
+                    System.out.println(stateImpl.getOSVInstance().peek().getHost());
                     String remoteIp = LoadBalanceUtil.getRemoteHost(stateImpl);
                     try {
                         EtcdUtil.putValue(instanceID, StateImplJsonHelp.toString(stateImpl));

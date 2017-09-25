@@ -11,6 +11,7 @@
         <module>lambdanettyloadbalancer</module>
         <module>lambdasystemservice</module>
         <module>lambdacli</module>
+        <module>dummyservice</module>
     </modules>
     <packaging>pom</packaging>
 
