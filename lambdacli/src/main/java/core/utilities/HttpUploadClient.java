@@ -174,7 +174,6 @@ public final class HttpUploadClient {
         // add Form attribute
 
       for (Entry<String,String> item:attributes){
-          System.out.println(item.getKey());
           bodyRequestEncoder.addBodyAttribute(item.getKey(),item.getValue());
       }
 

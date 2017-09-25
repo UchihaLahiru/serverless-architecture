@@ -29,7 +29,7 @@ import java.util.Map;
 import static core.utilities.FileType.*;
 
 public class HTTPFileUpload  {
-    private static final String FILE_UPLOAD_URL = "http://localhost:8080/file";
+    private static final String FILE_UPLOAD_URL = "http://localhost:8084/file";
     public static final String FUNCTION_IS_UPLOADED = "Function is uploaded";
     public static final String FUNCTION_UPLOADING_FAILED = "Function uploading failed";
     public static final String FILE_PARAMETER_NAME = "file";
@@ -61,7 +61,13 @@ public class HTTPFileUpload  {
                 if (!isFileTypeCorrect(file.getName(), PYTHON)) {
                     return FILE_TYPE_IS_NOT_COMPATIBLE;
                 }
+                try {
 
+                    result = HttpUploadClient.uploadFileAsMultiPart(file,attributes);
+                    System.out.println("uploaded");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 break;
             }
             case NODE_JS: {
@@ -88,10 +94,14 @@ public class HTTPFileUpload  {
         return array[array.length - 1].equals(fileType.getExtention());
     }
 
-    public static void main(String[] args) throws IOException {
-        List<Map.Entry<String, String>> attributes = new ArrayList<>();
-
-        attributes.add(new AbstractMap.SimpleEntry<String, String>("testkey","testValue"));
-        System.out.println(HTTPFileUpload.uploadFile(PYTHON, new File("/home/deshan/main.py"),attributes ));
-    }
+//    public static void main(String[] args) throws IOException {
+//        List<Map.Entry<String, String>> attributes = new ArrayList<>();
+//
+//        attributes.add(new AbstractMap.SimpleEntry<String, String>("user_id",String.valueOf(34343)));
+//        attributes.add(new AbstractMap.SimpleEntry<String, String>("user_domain","maaa"));
+//        attributes.add(new AbstractMap.SimpleEntry<String, String>("function_name","rrrr"));
+//        attributes.add(new AbstractMap.SimpleEntry<String, String>("function_event","ete.ere"));
+//        attributes.add(new AbstractMap.SimpleEntry<String, String>("function_type","2"));
+//        System.out.println(HTTPFileUpload.uploadFile(PYTHON, new File("/Users/maanadev/Projects/uni/serverless-architecture/lambdacli/test.py"),attributes ));
+//    }
 }
